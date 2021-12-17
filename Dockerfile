@@ -1,4 +1,4 @@
-FROM node:16-alpine as builder
+FROM arm64v8/node:16-alpine as builder
 WORKDIR /app
 ADD . .
 RUN npm install && \
