@@ -3,8 +3,8 @@ import {
   Box,
   Grid,
 } from '@mui/material';
-import Album from '../components/album'
-import Header from '../components/header'
+import Album from '../components/Album'
+import Header from '../components/Header'
 
 const Home: NextPage = () => {
   const albums = [
