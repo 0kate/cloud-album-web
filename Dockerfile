@@ -1,6 +1,7 @@
-FROM arm64v8/node:16-alpine as builder
+FROM node:16-alpine AS builder
+
 WORKDIR /app
-ADD . .
+COPY . .
 RUN npm install && \
     npm run build && \
     npm run export
