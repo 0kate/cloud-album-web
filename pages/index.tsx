@@ -21,6 +21,7 @@ const Home: NextPage = () => {
   const [apiKey, setApiKey] = useState<string>('')
   const [apiKeyCache, setApiKeyCache] = useState<string>('')
   const [albums, setAlbums] = useState<Album[]>([])
+  const [thumbnails, setThumbnails] = useState({});
 
   const onChangeApiKeyCache = useCallback((event) => {
     setApiKeyCache(event.target.value)
@@ -43,9 +44,28 @@ const Home: NextPage = () => {
         },
       })
       const responseJson = await response.json()
-      setAlbums(responseJson['albums'])
+
+      const albums = responseJson['albums']
+      setAlbums(albums)
+
+      for (let album of albums) {
+        const response = await fetch(`${apiHost}/album/api/albums/${album.name}/thumbnail`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': apiKey,
+          },
+        })
+        const responseJson = await response.json()
+
+        const thumbnailContent = responseJson.thumbnail
+        thumbnails[album.name] = thumbnailContent
+        setThumbnails({ ...thumbnails })
+      }
     })()
-  }, [apiKey])
+  }, [apiKey, setThumbnails])
+
+  console.log(thumbnails)
 
   return (
     <React.Fragment>
@@ -54,7 +74,7 @@ const Home: NextPage = () => {
         <Grid container justifyContent="center" spacing={3}>
           {albums.map((album, idx) => (
             <Grid item key={idx} xs={10}>
-              <Album title={album.name} />
+              <Album title={album.name} thumbnail={thumbnails[album.name]} />
             </Grid>
           ))}
         </Grid>

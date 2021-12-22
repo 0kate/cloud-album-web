@@ -7,13 +7,14 @@ import styles from './Album.module.css'
 
 interface Props {
   title: string
+  thumbnail: string | undefined
 }
 
 const Album = (props: Props) => {
   return (
-    <Paper elevation={5}>
+    <Paper elevation={5} style={{ backgroundImage: `url(data:image/jpg;base64,${props.thumbnail})`, backgroundSize: "320px 220px", backgroundRepeat: "no-repeat", backdropFilter: "grayscale(30%) !important" }}>
       <Box width="100%" padding="15px" display="flex" minHeight="130px">
-        <Typography className={styles.title}>{props.title}</Typography>
+        <Typography className={styles.title} variant="h6">{props.title}</Typography>
       </Box>
     </Paper>
   )
