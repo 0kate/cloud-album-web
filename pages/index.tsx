@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Grid,
   TextField,
 } from '@mui/material';
@@ -17,11 +16,15 @@ type Album = {
   name: string
 }
 
+type Thumbnails = {
+  [name: string]: string;
+}
+
 const Home: NextPage = () => {
   const [apiKey, setApiKey] = useState<string>('')
   const [apiKeyCache, setApiKeyCache] = useState<string>('')
   const [albums, setAlbums] = useState<Album[]>([])
-  const [thumbnails, setThumbnails] = useState({});
+  const [thumbnails, setThumbnails] = useState<Thumbnails>({})
 
   const onChangeApiKeyCache = useCallback((event) => {
     setApiKeyCache(event.target.value)
