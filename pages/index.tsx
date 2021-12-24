@@ -10,6 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import Album from '../components/Album'
+import Gallery from '../components/Gallery'
 import Header from '../components/Header'
 
 type Album = {
@@ -25,6 +26,7 @@ const Home: NextPage = () => {
   const [apiKeyCache, setApiKeyCache] = useState<string>('')
   const [albums, setAlbums] = useState<Album[]>([])
   const [thumbnails, setThumbnails] = useState<Thumbnails>({})
+  const [selectedAlbum, setSelectedAlbum] = useState<string | undefined>(undefined)
 
   const onChangeApiKeyCache = useCallback((event) => {
     setApiKeyCache(event.target.value)
@@ -32,6 +34,12 @@ const Home: NextPage = () => {
   const onClickSet = useCallback(() => {
     setApiKey(apiKeyCache)
   }, [apiKeyCache, setApiKey])
+  const onClickAlbum = useCallback((album) => {
+    setSelectedAlbum(album)
+  }, [setSelectedAlbum])
+  const onCloseGallery = useCallback(() => {
+    setSelectedAlbum(undefined)
+  }, [])
 
   useEffect(() => {
     if (apiKey === '') {
@@ -75,7 +83,11 @@ const Home: NextPage = () => {
         <Grid container justifyContent="center" spacing={3}>
           {albums.map((album, idx) => (
             <Grid item key={idx} xs={10}>
-              <Album title={album.name} thumbnail={thumbnails[album.name]} />
+              <Album 
+                title={album.name}
+                thumbnail={thumbnails[album.name]}
+                onClick={onClickAlbum}
+              />
             </Grid>
           ))}
         </Grid>
@@ -99,6 +111,7 @@ const Home: NextPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Gallery album={selectedAlbum} onClose={onCloseGallery} />
     </React.Fragment>
   )
 }
