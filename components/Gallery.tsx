@@ -1,4 +1,10 @@
-import React, { useState } from 'react'
+import {
+  ForwardRefExoticComponent,
+  PropsWithRef,
+  forwardRef, 
+  useState,
+  ReactNode,
+} from 'react'
 import {
   AppBar,
   Box,
@@ -20,7 +26,7 @@ interface Props {
   onClose: () => void
 }
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef<any, any>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
