@@ -1,10 +1,4 @@
-import {
-  ForwardRefExoticComponent,
-  PropsWithRef,
-  forwardRef, 
-  useState,
-  ReactNode,
-} from 'react'
+import { forwardRef } from 'react'
 import {
   AppBar,
   Box,
@@ -19,10 +13,12 @@ import {
 import {
   Close as CloseIcon,
 } from '@mui/icons-material'
+import { default as GridGallery } from 'react-grid-gallery'
 import styles from './Gallery.module.css'
 
 interface Props {
   album: string | undefined
+  images: string[]
   onClose: () => void
 }
 
@@ -31,13 +27,12 @@ const Transition = forwardRef<any, any>(function Transition(props, ref) {
 })
 
 const Gallery = (props: Props) => {
-  const images = useState<string[]>([
-    'image1',
-    'image2',
-    'image3',
-    'image4',
-    'image5',
-  ])
+  const images = (props.images || []).map(image => {
+    return {
+      src: `url(data:image/jpg;base64,${image})`,
+      thumbnail: `data:image/jpg;base64,${image}`
+    }
+  })
 
   return (
     <Dialog open={props.album !== undefined} onClose={props.onClose} TransitionComponent={Transition} fullWidth fullScreen>
@@ -55,13 +50,7 @@ const Gallery = (props: Props) => {
           </Box>
         </Toolbar>
       </AppBar>
-      <Grid container>
-        {images.map((image, idx) => (
-          <Grid key={idx} className={styles.image} item xs={4}>
-            <Skeleton variant="rectangular" />
-          </Grid>
-        ))}
-      </Grid>
+      <GridGallery images={images} />
     </Dialog>
   )
 }

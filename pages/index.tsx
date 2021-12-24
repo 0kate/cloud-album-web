@@ -27,6 +27,7 @@ const Home: NextPage = () => {
   const [albums, setAlbums] = useState<Album[]>([])
   const [thumbnails, setThumbnails] = useState<Thumbnails>({})
   const [selectedAlbum, setSelectedAlbum] = useState<string | undefined>(undefined)
+  const [images, setImages]= useState<string[]>([])
 
   const onChangeApiKeyCache = useCallback((event) => {
     setApiKeyCache(event.target.value)
@@ -34,11 +35,38 @@ const Home: NextPage = () => {
   const onClickSet = useCallback(() => {
     setApiKey(apiKeyCache)
   }, [apiKeyCache, setApiKey])
-  const onClickAlbum = useCallback((album) => {
+  const onClickAlbum = useCallback(async (album) => {
     setSelectedAlbum(album)
-  }, [setSelectedAlbum])
+    if (album === undefined) return
+    const apiHost = process.env.NEXT_PUBLIC_API_HOST || ''
+    const response = await fetch(`${apiHost}/album/api/albums/${album}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': apiKey,
+      },
+    })
+    const responseJson = await response.json()
+
+    const newImages = []
+    for (let image of responseJson['images']) {
+      console.log(image)
+      const response = await fetch(`${apiHost}/album/api/albums/${album}/${image.name}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': apiKey,
+        },
+      })
+      const responseJson = await response.json()
+
+      newImages.push(responseJson.content)
+      setImages([...newImages])
+    }
+  }, [apiKey, selectedAlbum, setSelectedAlbum, images, setImages])
   const onCloseGallery = useCallback(() => {
     setSelectedAlbum(undefined)
+    setImages([])
   }, [])
 
   useEffect(() => {
@@ -69,7 +97,7 @@ const Home: NextPage = () => {
         })
         const responseJson = await response.json()
 
-        const thumbnailContent = responseJson.thumbnail
+        const thumbnailContent = responseJson.content
         thumbnails[album.name] = thumbnailContent
         setThumbnails({ ...thumbnails })
       }
@@ -111,7 +139,7 @@ const Home: NextPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Gallery album={selectedAlbum} onClose={onCloseGallery} />
+      <Gallery album={selectedAlbum} onClose={onCloseGallery} images={images} />
     </React.Fragment>
   )
 }
