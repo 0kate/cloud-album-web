@@ -31,7 +31,7 @@ const Album = (props: Props) => {
     </Paper>
   ) : (
     <Paper elevation={5} style={{ width: "auto", height: "130px" }}>
-      <Skeleton variant="rectangular" height="100%" />
+      <Skeleton variant="rectangular" animation="wave" height="100%" />
     </Paper>
   )
 }
