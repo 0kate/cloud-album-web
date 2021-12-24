@@ -3,7 +3,7 @@
   "short_name": "Album",
   "theme_color": "#fff",
   "background_color": "#fff",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/album",
   "start_url": "/album",
