@@ -68,12 +68,10 @@ const Home: NextPage = () => {
     })()
   }, [apiKey, setThumbnails])
 
-  console.log(thumbnails)
-
   return (
     <React.Fragment>
       <Header />
-      <Box paddingTop={2} paddingBottom={2}>
+      <Box paddingTop={3} paddingBottom={2}>
         <Grid container justifyContent="center" spacing={3}>
           {albums.map((album, idx) => (
             <Grid item key={idx} xs={10}>

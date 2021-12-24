@@ -13,7 +13,7 @@ import styles from './Header.module.css'
 
 const Header = () => {
   return (
-    <AppBar className={styles.appbar} position="sticky" elevation={0}>
+    <AppBar className={styles.appbar} position="sticky">
       <Toolbar>
         <Typography className={styles.title} variant="h6">Albums</Typography>
         <Box width="100%" display="flex">

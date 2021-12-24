@@ -2,4 +2,16 @@
     font-weight: bold !important;
     margin-top: auto !important;
     color: white !important;
+    padding-left: 15px !important;
+    padding-bottom: 10px !important;
+    z-index: 1 !important;
+}
+
+.backgroundFilter {
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    backdrop-filter: brightness(73%) !important;
+    border-radius: 3% !important;
+    z-index: 0 !important;
 }
