@@ -100,7 +100,7 @@ const Home: NextPage = () => {
 
           const thumbnailContent = responseJson.content
 	  thumbnails[album.name] = thumbnailContent
-	  resolve()
+	  resolve(undefined)
 	})
       }))
       setThumbnails({ ...thumbnails })
