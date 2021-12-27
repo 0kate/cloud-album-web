@@ -87,7 +87,7 @@ const Home: NextPage = () => {
       const albums = responseJson['albums']
       setAlbums(albums)
 
-      await Promise.all(albums.map(album => {
+      await Promise.all(albums.map((album: Album) => {
 	return new Promise(async (resolve, reject) => {
 	  const response = await fetch(`${apiHost}/album/api/albums/${album.name}/thumbnail`, {
 	    method: 'GET',
