@@ -87,20 +87,23 @@ const Home: NextPage = () => {
       const albums = responseJson['albums']
       setAlbums(albums)
 
-      for (let album of albums) {
-        const response = await fetch(`${apiHost}/album/api/albums/${album.name}/thumbnail`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-API-KEY': apiKey,
-          },
-        })
-        const responseJson = await response.json()
+      await Promise.all(albums.map(album => {
+	return new Promise(async (resolve, reject) => {
+	  const response = await fetch(`${apiHost}/album/api/albums/${album.name}/thumbnail`, {
+	    method: 'GET',
+	    headers: {
+	      'Content-Type': 'application/json',
+	      'X-API-KEY': apiKey,
+	    },
+	  })
+	  const responseJson = await response.json()
 
-        const thumbnailContent = responseJson.content
-        thumbnails[album.name] = thumbnailContent
-        setThumbnails({ ...thumbnails })
-      }
+          const thumbnailContent = responseJson.content
+	  thumbnails[album.name] = thumbnailContent
+	  resolve()
+	})
+      }))
+      setThumbnails({ ...thumbnails })
     })()
   }, [apiKey, setThumbnails])
 
