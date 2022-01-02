@@ -1,10 +1,15 @@
+import { useState } from 'react'
 import Head from 'next/head'
 import type { AppProps } from 'next/app'
+import { ApiKeyContext } from '../hooks/use-apikey'
+import useLocalStorage from '../hooks/use-local-storage'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [apiKey, setApiKey] = useLocalStorage('cloud-album-api-key', '')
+
   return (
-    <>
+    <ApiKeyContext.Provider value={[apiKey, setApiKey]}>
       <Head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -33,7 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="theme-color" content="#317EFB" />
       </Head>
       <Component {...pageProps} />
-    </>
+    </ApiKeyContext.Provider>
   )
 }
 

@@ -2,148 +2,36 @@ import React, { useCallback, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import {
   Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Grid,
-  TextField,
-} from '@mui/material';
-import Album from '../components/Album'
-import Gallery from '../components/Gallery'
-import Header from '../components/Header'
-
-type Album = {
-  name: string
-}
-
-type Thumbnails = {
-  [name: string]: string;
-}
+  Typography,
+} from '@mui/material'
+import Layout from '../components/Layout'
+import useApiKey from '../hooks/use-apikey'
 
 const Home: NextPage = () => {
-  const [apiKey, setApiKey] = useState<string>('')
-  const [apiKeyCache, setApiKeyCache] = useState<string>('')
-  const [albums, setAlbums] = useState<Album[]>([])
-  const [thumbnails, setThumbnails] = useState<Thumbnails>({})
-  const [selectedAlbum, setSelectedAlbum] = useState<string | undefined>(undefined)
-  const [images, setImages]= useState<string[]>([])
+  const [apiKey, setApiKey] = useApiKey()
 
-  const onChangeApiKeyCache = useCallback((event) => {
-    setApiKeyCache(event.target.value)
-  }, [setApiKeyCache])
-  const onClickSet = useCallback(() => {
-    setApiKey(apiKeyCache)
-  }, [apiKeyCache, setApiKey])
-  const onClickAlbum = useCallback(async (album) => {
-    setSelectedAlbum(album)
-    if (album === undefined) return
-    const apiHost = process.env.NEXT_PUBLIC_API_HOST || ''
-    const response = await fetch(`${apiHost}/album/api/albums/${album}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-KEY': apiKey,
-      },
-    })
-    const responseJson = await response.json()
+  const startDate: Date = new Date('11/10/2021')
+  const currentDate: Date = new Date()
+  const diffTime = Math.abs(currentDate.getTime() - startDate.getTime())
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-    const newImages = []
-    for (let image of responseJson['images']) {
-      console.log(image)
-      const response = await fetch(`${apiHost}/album/api/albums/${album}/${image.name}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': apiKey,
-        },
-      })
-      const responseJson = await response.json()
-
-      newImages.push(responseJson.content)
-      setImages([...newImages])
-    }
-  }, [apiKey, selectedAlbum, setSelectedAlbum, images, setImages])
-  const onCloseGallery = useCallback(() => {
-    setSelectedAlbum(undefined)
-    setImages([])
-  }, [])
-
-  useEffect(() => {
-    if (apiKey === '') {
-      return
-    }
-    (async () => {
-      const apiHost = process.env.NEXT_PUBLIC_API_HOST || ''
-      const response = await fetch(`${apiHost}/album/api/albums`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': apiKey,
-        },
-      })
-      const responseJson = await response.json()
-
-      const albums = responseJson['albums']
-      setAlbums(albums)
-
-      await Promise.all(albums.map((album: Album) => {
-	return new Promise(async (resolve, reject) => {
-	  const response = await fetch(`${apiHost}/album/api/albums/${album.name}/thumbnail`, {
-	    method: 'GET',
-	    headers: {
-	      'Content-Type': 'application/json',
-	      'X-API-KEY': apiKey,
-	    },
-	  })
-	  const responseJson = await response.json()
-
-          const thumbnailContent = responseJson.content
-	  thumbnails[album.name] = thumbnailContent
-	  resolve(undefined)
-	})
-      }))
-      setThumbnails({ ...thumbnails })
-    })()
-  }, [apiKey, setThumbnails])
+  if (apiKey.length === 0) {
+    return (
+      <Layout>
+	home
+      </Layout>
+    )
+  }
 
   return (
-    <React.Fragment>
-      <Header />
-      <Box paddingTop={3} paddingBottom={2}>
-        <Grid container justifyContent="center" spacing={3}>
-          {albums.map((album, idx) => (
-            <Grid item key={idx} xs={10}>
-              <Album 
-                title={album.name}
-                thumbnail={thumbnails[album.name]}
-                onClick={onClickAlbum}
-              />
-            </Grid>
-          ))}
-        </Grid>
+    <Layout>
+      <Box display="flex">
+	<Typography variant="h4">{diffDays}</Typography>
+	<Box marginTop="auto">
+	  <Typography noWrap>days</Typography>
+	</Box>
       </Box>
-      <Dialog open={apiKey.length === 0} maxWidth="sm" fullWidth>
-        <DialogContent>
-          <TextField
-            variant="standard"
-            label="Key"
-            value={apiKeyCache}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={onChangeApiKeyCache}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={onClickSet}>
-            SET
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Gallery album={selectedAlbum} onClose={onCloseGallery} images={images} />
-    </React.Fragment>
+    </Layout>
   )
 }
 
