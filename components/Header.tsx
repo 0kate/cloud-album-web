@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import {
   Apps as AppsIcon,
-  RestartAlt as RestartAltIcon,
+  ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material'
 import useApiKey from '../hooks/use-apikey'
 import useTitle from '../hooks/use-title'
@@ -32,7 +32,7 @@ const Header = () => {
               <AppsIcon className={styles.icon} />
             </IconButton>
 	    <IconButton onClick={onClickReset}>
-	      <RestartAltIcon className={styles.icon} />
+	      <ExitToAppIcon className={styles.icon} />
 	    </IconButton>
           </Box>
         </Box>
