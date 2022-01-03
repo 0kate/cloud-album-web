@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout fullWidth>
       <Box display="flex">
 	<Typography variant="h4">{diffDays}</Typography>
 	<Box marginTop="auto">

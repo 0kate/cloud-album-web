@@ -4,13 +4,22 @@ import Header from './Header'
 import BottomNav from './BottomNav'
 import LoginDialog from './LoginDialog'
 
-interface Props {}
+interface Props {
+  fullWidth?: boolean
+}
 
-const Layout: FC<Props> = ({ children }) => {
+const Layout: FC<Props> = ({ children, fullWidth }) => {
+  const boxProps = {
+    paddingTop: fullWidth ? 0 : 1,
+    paddingRight: fullWidth ? 0 : 3,
+    paddingLeft: fullWidth ? 0 : 3,
+    paddingBottom: 10,
+  }
+
   return (
     <Fragment>
       <Header />
-      <Box paddingTop={1} paddingRight={3} paddingLeft={3} paddingBottom={10}>
+      <Box {...boxProps}>
 	{children}
       </Box>
       <BottomNav />
