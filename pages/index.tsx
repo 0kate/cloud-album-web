@@ -10,7 +10,7 @@ import useApiKey from '../hooks/use-apikey'
 const Home: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey()
 
-  const startDate: Date = new Date('11/10/2021')
+  const startDate: Date = new Date('2021-10-11')
   const currentDate: Date = new Date()
   const diffTime = Math.abs(currentDate.getTime() - startDate.getTime())
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
