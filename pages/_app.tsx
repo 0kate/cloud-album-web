@@ -1,21 +1,21 @@
-import { useState } from 'react'
-import Head from 'next/head'
-import type { AppProps } from 'next/app'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { ApiKeyContext } from '../hooks/use-apikey'
-import useLocalStorage from '../hooks/use-local-storage'
-import '../styles/globals.css'
+import { useState } from 'react';
+import Head from 'next/head';
+import type { AppProps } from 'next/app';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ApiKeyContext } from '../hooks/use-apikey';
+import useLocalStorage from '../hooks/use-local-storage';
+import '../styles/globals.css';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#d65a8c'
-    }
-  }
-})
+      main: '#d65a8c',
+    },
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [apiKey, setApiKey] = useLocalStorage('cloud-album-api-key', '')
+  const [apiKey, setApiKey] = useLocalStorage('cloud-album-api-key', '');
 
   return (
     <ThemeProvider theme={theme}>
@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 	<Component {...pageProps} />
       </ApiKeyContext.Provider>
     </ThemeProvider>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;

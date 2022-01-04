@@ -1,23 +1,25 @@
-import { useCallback, useState } from 'react'
+import { FC, useCallback, useState } from 'react';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   TextField,
-} from '@mui/material'
-import useApiKey from '../hooks/use-apikey'
+} from '@mui/material';
+import useApiKey from '../hooks/use-apikey';
 
-const LoginDialog = () => {
-  const [apiKey, setApiKey] = useApiKey()
-  const [apiKeyCache, setApiKeyCache] = useState('')
+interface Props {}
+
+const LoginDialog: FC<Props> = () => {
+  const [apiKey, setApiKey] = useApiKey();
+  const [apiKeyCache, setApiKeyCache] = useState('');
 
   const onChangeApiKeyCache = useCallback((event) => {
-    setApiKeyCache(event.target.value)
-  }, [])
+    setApiKeyCache(event.target.value);
+  }, []);
   const onClickSet = useCallback(() => {
-    setApiKey(apiKeyCache)
-  }, [apiKeyCache, setApiKey])
+    setApiKey(apiKeyCache);
+  }, [apiKeyCache, setApiKey]);
 
   return (
     <Dialog open={apiKey.length === 0} maxWidth="sm" fullWidth>
@@ -37,7 +39,7 @@ const LoginDialog = () => {
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default LoginDialog
+export default LoginDialog;

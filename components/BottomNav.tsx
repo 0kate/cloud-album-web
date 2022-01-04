@@ -1,26 +1,28 @@
-import { useCallback } from 'react'
-import { useRouter } from 'next/router'
+import { FC, useCallback } from 'react';
+import { useRouter } from 'next/router';
 import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
   Paper,
-} from '@mui/material'
+} from '@mui/material';
 import {
   Home as HomeIcon,
   NoteAlt as NoteAltIcon,
   PhotoLibrary as PhotoLibraryIcon,
   Settings as SettingsIcon,
-} from '@mui/icons-material'
-import useTitle from '../hooks/use-title'
+} from '@mui/icons-material';
+import useTitle from '../hooks/use-title';
 
-const BottomNav = () => {
-  const title = useTitle()
-  const router = useRouter()
+interface Props {}
+
+const BottomNav: FC<Props> = () => {
+  const title = useTitle();
+  const router = useRouter();
 
   const onClickNav = useCallback((path) => {
-    router.push(path)
-  }, [router])
+    router.push(path);
+  }, [router]);
 
   return (
     <Box position="fixed" bottom={0} top="auto" width="100%" zIndex={2}>
@@ -33,7 +35,7 @@ const BottomNav = () => {
 	</BottomNavigation>
       </Paper>
     </Box>
-  )
-}
+  );
+};
 
-export default BottomNav
+export default BottomNav;

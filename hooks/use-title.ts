@@ -1,23 +1,23 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 const useTitle = (): string => {
-  const router = useRouter()
-  const paths = router.pathname.split('/')
+  const router = useRouter();
+  const paths = router.pathname.split('/');
 
-  let title = 'Home'
+  let title = 'Home';
   switch (paths[paths.length - 1]) {
     case 'albums':
-      title = 'Albums'
-      break
+      title = 'Albums';
+      break;
     case 'memos':
-      title = 'Memos'
-      break
+      title = 'Memos';
+      break;
     case 'settings':
-      title = 'Settings'
-      break
+      title = 'Settings';
+      break;
   }
 
-  return title
-}
+  return title;
+};
 
-export default useTitle
+export default useTitle;

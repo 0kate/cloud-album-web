@@ -4,21 +4,21 @@ import {
   createContext,
   useContext,
   useState,
-} from 'react'
+} from 'react';
 
 type ApiKeyContextType = [
   string,
-  Dispatch<SetStateAction<string>>
-]
+  Dispatch<SetStateAction<string>>,
+];
 
-export const ApiKeyContext = createContext<ApiKeyContextType | null>(null)
+export const ApiKeyContext = createContext<ApiKeyContextType|null>(null);
 
 const useApiKey = () => {
-  const context = useContext(ApiKeyContext)
+  const context = useContext(ApiKeyContext);
   if (context === null) {
-    throw new Error()
+    throw new Error();
   }
-  return context
-}
+  return context;
+};
 
-export default useApiKey
+export default useApiKey;

@@ -1,5 +1,5 @@
-import { Fragment, useCallback, useState } from 'react'
-import type { NextPage } from 'next'
+import { Fragment, useCallback, useState } from 'react';
+import type { NextPage } from 'next';
 import {
   Box,
   Button,
@@ -18,13 +18,13 @@ import {
   Menu,
   MenuItem,
   TextField,
-} from '@mui/material'
+} from '@mui/material';
 import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,
-} from '@mui/icons-material'
-import Layout from '../components/Layout'
-import useApiKey from '../hooks/use-apikey'
+} from '@mui/icons-material';
+import Layout from '../components/Layout';
+import useApiKey from '../hooks/use-apikey';
 
 interface Memo {
   title: string;
@@ -32,11 +32,11 @@ interface Memo {
 }
 
 const Memos: NextPage = () => {
-  const [apiKey, setApiKey] = useApiKey()
-  const [openDialog, setOpenDialog] = useState<boolean>(false)
-  const [selectedMemoIdx, setSelectedMemoIdx] = useState<number | null>(null)
-  const [openConfirmationDialog, setOpenConfirmationDialog] = useState<'finishing' | 'deleting' | null>(null)
-  const [menuAnchor, setMenuAnchor] = useState(null)
+  const [apiKey, setApiKey] = useApiKey();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [selectedMemoIdx, setSelectedMemoIdx] = useState<number|null>(null);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState<'finishing'|'deleting' | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState(null);
   const [memos, setMemos] = useState<Memo[]>([
     {
       title: 'ハンバーグ',
@@ -49,61 +49,61 @@ const Memos: NextPage = () => {
     {
       title: 'ディズニー',
       done: false,
-    }
-  ])
+    },
+  ]);
 
   const onClickMemo = useCallback((event) => {
-    setSelectedMemoIdx(event.currentTarget.dataset.index)
-    setOpenConfirmationDialog('finishing')
-  }, [setSelectedMemoIdx, setOpenConfirmationDialog])
+    setSelectedMemoIdx(event.currentTarget.dataset.index);
+    setOpenConfirmationDialog('finishing');
+  }, [setSelectedMemoIdx, setOpenConfirmationDialog]);
   const onClickDeleteMemo = useCallback((event) => {
     if (selectedMemoIdx === null) {
-      return
+      return;
     }
-    setMenuAnchor(null)
-    setOpenConfirmationDialog('deleting')
-  }, [memos, selectedMemoIdx, setMenuAnchor, setOpenConfirmationDialog])
+    setMenuAnchor(null);
+    setOpenConfirmationDialog('deleting');
+  }, [selectedMemoIdx, setMenuAnchor, setOpenConfirmationDialog]);
   const onCloseConfirmationDialog = useCallback(() => {
-    setOpenConfirmationDialog(null)
-  }, [setOpenConfirmationDialog])
+    setOpenConfirmationDialog(null);
+  }, [setOpenConfirmationDialog]);
   const onClickExpandMenu = useCallback((event) => {
-    setSelectedMemoIdx(event.currentTarget.dataset.index)
-    setMenuAnchor(event.currentTarget)
-  }, [setMenuAnchor, setSelectedMemoIdx])
+    setSelectedMemoIdx(event.currentTarget.dataset.index);
+    setMenuAnchor(event.currentTarget);
+  }, [setMenuAnchor, setSelectedMemoIdx]);
   const onCloseMenu = useCallback(() => {
-    setMenuAnchor(null)
-    setSelectedMemoIdx(null)
-  }, [setMenuAnchor, setSelectedMemoIdx])
+    setMenuAnchor(null);
+    setSelectedMemoIdx(null);
+  }, [setMenuAnchor, setSelectedMemoIdx]);
   const onClickFab = useCallback(() => {
-    setOpenDialog(true)
-  },  [setOpenDialog])
+    setOpenDialog(true);
+  },  [setOpenDialog]);
   const onCloseDialog = useCallback(() => {
-    setOpenDialog(false)
-  }, [setOpenDialog])
+    setOpenDialog(false);
+  }, [setOpenDialog]);
   const onFinishMemo = useCallback(() => {
     if (selectedMemoIdx === null) {
-      return
+      return;
     }
-    const newMemos = [...memos]
-    newMemos[selectedMemoIdx].done = true
-    setMemos(newMemos)
-    setSelectedMemoIdx(null)
-    setOpenConfirmationDialog(null)
-  }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog])
+    const newMemos = [...memos];
+    newMemos[selectedMemoIdx].done = true;
+    setMemos(newMemos);
+    setSelectedMemoIdx(null);
+    setOpenConfirmationDialog(null);
+  }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog]);
   const onDeleteMemo = useCallback(() => {
     if (selectedMemoIdx === null) {
-      return
+      return;
     }
-    setSelectedMemoIdx(null)
-    setOpenConfirmationDialog(null)
-  }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog])
+    setSelectedMemoIdx(null);
+    setOpenConfirmationDialog(null);
+  }, [selectedMemoIdx, setOpenConfirmationDialog]);
 
   if (apiKey.length === 0) {
     return (
       <Layout>
 	memos
       </Layout>
-    )
+    );
   }
 
   return (
@@ -163,7 +163,7 @@ const Memos: NextPage = () => {
 	</DialogActions>
       </Dialog>
     </Layout>
-  )
-}
+  );
+};
 
-export default Memos
+export default Memos;

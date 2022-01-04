@@ -1,26 +1,26 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import type { NextPage } from 'next'
+import { useCallback, useEffect, useState } from 'react';
+import type { NextPage } from 'next';
 import {
   Box,
   Typography,
-} from '@mui/material'
-import Layout from '../components/Layout'
-import useApiKey from '../hooks/use-apikey'
+} from '@mui/material';
+import Layout from '../components/Layout';
+import useApiKey from '../hooks/use-apikey';
 
 const Home: NextPage = () => {
-  const [apiKey, setApiKey] = useApiKey()
+  const [apiKey, setApiKey] = useApiKey();
 
-  const startDate: Date = new Date('2021-10-11')
-  const currentDate: Date = new Date()
-  const diffTime = Math.abs(currentDate.getTime() - startDate.getTime())
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  const startDate: Date = new Date('2021-10-11');
+  const currentDate: Date = new Date();
+  const diffTime = Math.abs(currentDate.getTime() - startDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   if (apiKey.length === 0) {
     return (
       <Layout>
 	home
       </Layout>
-    )
+    );
   }
 
   return (
@@ -32,7 +32,7 @@ const Home: NextPage = () => {
 	</Box>
       </Box>
     </Layout>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -1,11 +1,11 @@
-import { FC, Fragment, useCallback, useState } from 'react'
-import { Box } from '@mui/material'
-import Header from './Header'
-import BottomNav from './BottomNav'
-import LoginDialog from './LoginDialog'
+import { FC, Fragment, useCallback, useState } from 'react';
+import { Box } from '@mui/material';
+import Header from './Header';
+import BottomNav from './BottomNav';
+import LoginDialog from './LoginDialog';
 
 interface Props {
-  fullWidth?: boolean
+  fullWidth?: boolean;
 }
 
 const Layout: FC<Props> = ({ children, fullWidth }) => {
@@ -14,7 +14,7 @@ const Layout: FC<Props> = ({ children, fullWidth }) => {
     paddingRight: fullWidth ? 0 : 3,
     paddingLeft: fullWidth ? 0 : 3,
     paddingBottom: 10,
-  }
+  };
 
   return (
     <Fragment>
@@ -25,7 +25,7 @@ const Layout: FC<Props> = ({ children, fullWidth }) => {
       <BottomNav />
       <LoginDialog />
     </Fragment>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

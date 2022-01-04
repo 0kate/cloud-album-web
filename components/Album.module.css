@@ -15,3 +15,8 @@
     border-radius: 3% !important;
     z-index: 0 !important;
 }
+
+.albumFrame {
+    width: auto !important;
+    height: 130px !important;
+}

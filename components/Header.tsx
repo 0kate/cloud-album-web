@@ -1,26 +1,28 @@
-import { useCallback } from 'react'
+import { FC, useCallback } from 'react';
 import {
   AppBar,
   Box,
   IconButton,
   Toolbar,
   Typography,
-} from '@mui/material'
+} from '@mui/material';
 import {
   Apps as AppsIcon,
   ExitToApp as ExitToAppIcon,
-} from '@mui/icons-material'
-import useApiKey from '../hooks/use-apikey'
-import useTitle from '../hooks/use-title'
-import styles from './Header.module.css'
+} from '@mui/icons-material';
+import useApiKey from '../hooks/use-apikey';
+import useTitle from '../hooks/use-title';
+import styles from './Header.module.css';
 
-const Header = () => {
-  const [apiKey, setApiKey] = useApiKey()
-  const title = useTitle()
+interface Props {}
+
+const Header: FC<Props> = () => {
+  const [apiKey, setApiKey] = useApiKey();
+  const title = useTitle();
 
   const onClickReset = useCallback(() => {
-    setApiKey('')
-  }, [setApiKey])
+    setApiKey('');
+  }, [setApiKey]);
 
   return (
     <AppBar className={styles.appbar} position="sticky" elevation={0}>
@@ -38,7 +40,7 @@ const Header = () => {
         </Box>
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
