@@ -97,6 +97,7 @@ const Memos: NextPage = () => {
       return;
     }
     await deleteMemo(memos[selectedMemoIdx].id);
+    setMemos(await getMemos());
     setSelectedMemoIdx(null);
     setOpenConfirmationDialog(null);
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
