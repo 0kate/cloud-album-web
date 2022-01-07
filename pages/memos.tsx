@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import {
   Box,
@@ -25,33 +25,27 @@ import {
 } from '@mui/icons-material';
 import Layout from '../components/Layout';
 import useApiKey from '../hooks/use-apikey';
+import useMemos from '../hooks/use-memos';
 
 interface Memo {
+  id: string;
   title: string;
   done: boolean;
 }
 
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
+  const {addMemo, getMemos} = useMemos();
+  const [addMemoTitleCache, setAddMemoTitleCache] = useState<string>('');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedMemoIdx, setSelectedMemoIdx] = useState<number|null>(null);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState<'finishing'|'deleting' | null>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
-  const [memos, setMemos] = useState<Memo[]>([
-    {
-      title: 'ハンバーグ',
-      done: false,
-    },
-    {
-      title: '肉じゃが',
-      done: true,
-    },
-    {
-      title: 'ディズニー',
-      done: false,
-    },
-  ]);
+  const [memos, setMemos] = useState<Memo[]>([]);
 
+  const onChangeAddMemoTitleCache = useCallback((event) => {
+    setAddMemoTitleCache(event.target.value);
+  }, [setAddMemoTitleCache]);
   const onClickMemo = useCallback((event) => {
     setSelectedMemoIdx(event.currentTarget.dataset.index);
     setOpenConfirmationDialog('finishing');
@@ -63,6 +57,13 @@ const Memos: NextPage = () => {
     setMenuAnchor(null);
     setOpenConfirmationDialog('deleting');
   }, [selectedMemoIdx, setMenuAnchor, setOpenConfirmationDialog]);
+  const onClickAddMemo = useCallback(() => {
+    (async () => {
+      const newMemo = await addMemo(addMemoTitleCache);
+      console.log(newMemo);
+      setMemos(await getMemos());
+    })();
+  }, [addMemoTitleCache, addMemo, getMemos, setMemos]);
   const onCloseConfirmationDialog = useCallback(() => {
     setOpenConfirmationDialog(null);
   }, [setOpenConfirmationDialog]);
@@ -79,7 +80,8 @@ const Memos: NextPage = () => {
   },  [setOpenDialog]);
   const onCloseDialog = useCallback(() => {
     setOpenDialog(false);
-  }, [setOpenDialog]);
+    setAddMemoTitleCache('');
+  }, [setOpenDialog, setAddMemoTitleCache]);
   const onFinishMemo = useCallback(() => {
     if (selectedMemoIdx === null) {
       return;
@@ -97,6 +99,12 @@ const Memos: NextPage = () => {
     setSelectedMemoIdx(null);
     setOpenConfirmationDialog(null);
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
+
+  useEffect(() => {
+    (async () => {
+      setMemos(await getMemos());
+    })();
+  }, [getMemos, setMemos]);
 
   if (apiKey.length === 0) {
     return (
@@ -135,11 +143,18 @@ const Memos: NextPage = () => {
       {/* Add memo dialog */}
       <Dialog open={openDialog} maxWidth="md" onClose={onCloseDialog} fullWidth>
 	<DialogContent>
-	  <TextField variant="standard" label="title" InputLabelProps={{ shrink: true }} fullWidth />
+	  <TextField
+	    variant="standard"
+	    label="title"
+	    value={addMemoTitleCache}
+	    InputLabelProps={{ shrink: true }}
+	    onChange={onChangeAddMemoTitleCache}
+	    fullWidth
+	  />
 	</DialogContent>
 	<DialogActions>
 	  <Button onClick={onCloseDialog} variant="outlined">CANCEL</Button>
-	  <Button variant="contained">ADD</Button>
+	  <Button onClick={onClickAddMemo} variant="contained">ADD</Button>
 	</DialogActions>
       </Dialog>
       {/* Confirmation dialog for finishing memo */}
