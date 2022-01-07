@@ -25,6 +25,9 @@ const useMemos = () => {
       const responseJson = response.data;
       return responseJson;
     },
+    deleteMemo: async (memoId: string) => {
+      const response = await instance.delete(`/${memoId}`);
+    },
     checkDone: async (memo: { id: string, title: string, done: boolean }) => {
       const response = await instance.put(`/${memo.id}`, {
 	'title': memo.title,

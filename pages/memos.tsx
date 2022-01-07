@@ -35,7 +35,7 @@ interface Memo {
 
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
-  const {addMemo, getMemos, checkDone} = useMemos();
+  const {addMemo, getMemos, deleteMemo, checkDone} = useMemos();
   const [addMemoTitleCache, setAddMemoTitleCache] = useState<string>('');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedMemoIdx, setSelectedMemoIdx] = useState<number|null>(null);
@@ -62,8 +62,9 @@ const Memos: NextPage = () => {
       const newMemo = await addMemo(addMemoTitleCache);
       console.log(newMemo);
       setMemos(await getMemos());
+      setOpenDialog(false);
     })();
-  }, [addMemoTitleCache, addMemo, getMemos, setMemos]);
+  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos]);
   const onCloseConfirmationDialog = useCallback(() => {
     setOpenConfirmationDialog(null);
   }, [setOpenConfirmationDialog]);
@@ -95,6 +96,7 @@ const Memos: NextPage = () => {
     if (selectedMemoIdx === null) {
       return;
     }
+    await deleteMemo(memos[selectedMemoIdx].id);
     setSelectedMemoIdx(null);
     setOpenConfirmationDialog(null);
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
