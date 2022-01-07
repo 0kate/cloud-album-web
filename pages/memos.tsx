@@ -104,7 +104,7 @@ const Memos: NextPage = () => {
     (async () => {
       setMemos(await getMemos());
     })();
-  }, [getMemos, setMemos]);
+  }, []);
 
   if (apiKey.length === 0) {
     return (
