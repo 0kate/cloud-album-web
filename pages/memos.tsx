@@ -92,7 +92,7 @@ const Memos: NextPage = () => {
     setSelectedMemoIdx(null);
     setOpenConfirmationDialog(null);
   }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog]);
-  const onDeleteMemo = useCallback(() => {
+  const onDeleteMemo = useCallback(async () => {
     if (selectedMemoIdx === null) {
       return;
     }
