@@ -25,6 +25,12 @@ const useMemos = () => {
       const responseJson = response.data;
       return responseJson;
     },
+    checkDone: async (memo: { id: string, title: string, done: boolean }) => {
+      const response = await instance.put(`/${memo.id}`, {
+	'title': memo.title,
+	'done': true,
+      });
+    },
   };
 };
 
