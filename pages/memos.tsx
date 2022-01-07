@@ -101,6 +101,9 @@ const Memos: NextPage = () => {
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
 
   useEffect(() => {
+    if (memos.length > 1) {
+      return;
+    }
     (async () => {
       setMemos(await getMemos());
     })();
