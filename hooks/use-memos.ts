@@ -15,14 +15,14 @@ const useMemos = () => {
   return {
     getMemos: async () => {
       const response = await instance.get('/');
-      const responseJson = response.data();
+      const responseJson = response.data;
       return responseJson.memos;
     },
     addMemo: async (title: string) => {
       const response = await instance.post('/', {
 	'title': title,
       });
-      const responseJson = response.data();
+      const responseJson = response.data;
       return responseJson;
     },
   };
