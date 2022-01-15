@@ -110,8 +110,8 @@ const Memos: NextPage = () => {
     }
     setInProcessing(true);
     await checkDone(memos[selectedMemoIdx]);
-    setMemos(await getMemos());
     setSelectedMemoIdx(null);
+    setMemos(await getMemos());
     setOpenConfirmationDialog(null);
     setInProcessing(false);
   }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog]);
@@ -121,8 +121,8 @@ const Memos: NextPage = () => {
     }
     setInProcessing(true);
     await deleteMemo(memos[selectedMemoIdx].id);
-    setMemos(await getMemos());
     setSelectedMemoIdx(null);
+    setMemos(await getMemos());
     setOpenConfirmationDialog(null);
     setInProcessing(false);
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
