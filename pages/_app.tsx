@@ -29,7 +29,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
           <meta name="description" content="Description" />
           <meta name="keywords" content="Keywords" />
-          <title>Next.js PWA Example</title>
+	  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+          <title>Albums</title>
 
           <link rel="manifest" href="/album/manifest.json" />
           <link
@@ -45,7 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             sizes="32x32"
           />
           <link rel="apple-touch-icon" href="/album/apple-touch-icon.png"></link>
-          <meta name="theme-color" content="#317EFB" />
+	  <link rel="apple-touch-startup-image" href="/album/icon-512x512.png"></link>
 	</Head>
 	<Component {...pageProps} />
       </ApiKeyContext.Provider>
