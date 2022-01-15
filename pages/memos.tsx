@@ -287,7 +287,7 @@ const Memos: NextPage = () => {
 	      onChange={onChangeMoveDestination}
 	    >
 	      {lists.map((list: Memo) => (
-		<MenuItem value={list.id}>
+		<MenuItem key={list.id} value={list.id}>
 		  <Typography variant="subtitle1" style={{ color: 'grey' }}>{list.title}</Typography>
 		</MenuItem>
 	      ))}
