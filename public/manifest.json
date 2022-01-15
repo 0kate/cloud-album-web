@@ -1,10 +1,9 @@
 {
-  "name": "Album",
-  "short_name": "Album",
-  "theme_color": "#fff",
-  "background_color": "#fff",
-  "display": "fullscreen",
-  "orientation": "portrait",
+  "name": "Albums",
+  "short_name": "Albums",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
   "scope": "/album",
   "start_url": "/album",
   "icons": [
