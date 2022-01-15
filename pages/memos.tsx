@@ -4,12 +4,14 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
   CircularProgress,
   Dialog,
   DialogContent,
   DialogActions,
   Divider,
   Fab,
+  FormControlLabel,
   IconButton,
   ListItemButton,
   ListItemIcon,
@@ -18,6 +20,8 @@ import {
   ListItem,
   Menu,
   MenuItem,
+  Radio,
+  RadioGroup,
   TextField,
   Typography,
 } from '@mui/material';
@@ -32,16 +36,24 @@ import useApiKey from '../hooks/use-apikey';
 import useMemos from '../hooks/use-memos';
 import { Memo } from '../lib/types';
 
+type AdditionType = 'memo' | 'list';
+type ConfirmationDialogType = 'finishing' | 'deleting' | null;
+type OpenListFlags = {
+  [id: string]: boolean;
+};
+
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
   const {addMemo, getMemos, deleteMemo, checkDone} = useMemos();
   const [addMemoTitleCache, setAddMemoTitleCache] = useState<string>('');
+  const [additionType, setAdditionType] = useState<AdditionType>('memo');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [selectedMemoIdx, setSelectedMemoIdx] = useState<number|null>(null);
-  const [openConfirmationDialog, setOpenConfirmationDialog] = useState<'finishing'|'deleting' | null>(null);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState<ConfirmationDialogType>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [inProcessing, setInProcessing] = useState<boolean>(false);
   const [memos, setMemos] = useState<Memo[]>([]);
+  const [openList, setOpenList] = useState<OpenListFlags>({});
 
   const onChangeAddMemoTitleCache = useCallback((event) => {
     setAddMemoTitleCache(event.target.value);
@@ -60,13 +72,15 @@ const Memos: NextPage = () => {
   const onClickAddMemo = useCallback(() => {
     (async () => {
       setInProcessing(true);
-      const newMemo = await addMemo(addMemoTitleCache);
+      const addAsList = additionType === 'list';
+      const newMemo = await addMemo(addMemoTitleCache, addAsList);
       setMemos(await getMemos());
       setOpenDialog(false);
       setAddMemoTitleCache('');
+      setAdditionType('memo');
       setInProcessing(false);
     })();
-  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos]);
+  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos, additionType]);
   const onCloseConfirmationDialog = useCallback(() => {
     setOpenConfirmationDialog(null);
   }, [setOpenConfirmationDialog]);
@@ -84,7 +98,8 @@ const Memos: NextPage = () => {
   const onCloseDialog = useCallback(() => {
     setOpenDialog(false);
     setAddMemoTitleCache('');
-  }, [setOpenDialog, setAddMemoTitleCache]);
+    setAdditionType('memo');
+  }, [setOpenDialog, setAddMemoTitleCache, setAdditionType]);
   const onFinishMemo = useCallback(async () => {
     if (selectedMemoIdx === null) {
       return;
@@ -107,6 +122,9 @@ const Memos: NextPage = () => {
     setOpenConfirmationDialog(null);
     setInProcessing(false);
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
+  const onChangeAdditionType = useCallback((event) => {
+    setAdditionType(event.target.value);
+  }, [setAdditionType]);
 
   useEffect(() => {
     if (memos.length > 1) {
@@ -152,13 +170,25 @@ const Memos: NextPage = () => {
 	    onChange={onChangeAddMemoTitleCache}
 	    fullWidth
 	  />
+	  <RadioGroup value={additionType} onChange={onChangeAdditionType} row>
+	    <FormControlLabel
+	      value="memo"
+	      control={<Radio size="small" />}
+	      label={<Typography variant="subtitle2" style={{ color: 'grey' }}>Memo</Typography>}
+	    />
+	    <FormControlLabel
+	      value="list"
+	      control={<Radio size="small" />}
+	      label={<Typography variant="subtitle2" style={{ color: 'grey' }}>List</Typography>}
+	    />
+	  </RadioGroup>
 	</DialogContent>
 	<DialogActions>
 	  <Button onClick={onCloseDialog} variant="outlined" disabled={inProcessing}>
 	    CANCEL
 	  </Button>
 	  <Button onClick={onClickAddMemo} variant="contained" disabled={inProcessing}>
-	    {inProcessing ? <CircularProgress color="grey" size={25} /> : "ADD"}
+	    {inProcessing ? <CircularProgress color="secondary" size={25} /> : 'ADD'}
 	  </Button>
 	</DialogActions>
       </Dialog>

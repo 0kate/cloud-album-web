@@ -29,7 +29,7 @@ const ConfirmationDialog: FC<Props> = ({ message, open, onClose, onClickCancel, 
 	  CANCEL
 	</Button>
 	<Button variant="contained" onClick={onClickOk} disabled={inProcessing}>
-	  {inProcessing ? <CircularProgress color="secondary" size={25} /> : "OK"}
+	  {inProcessing ? <CircularProgress color="secondary" size={25} /> : 'OK'}
 	</Button>
       </DialogActions>
     </Dialog>
