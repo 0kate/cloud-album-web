@@ -22,7 +22,7 @@ const ConfirmationDialog: FC<Props> = ({ message, open, onClose, onClickCancel, 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <DialogContent>
-	<Typography className={styles.message} variant="subtitle">{message}</Typography>
+	<Typography className={styles.message} variant="subtitle1">{message}</Typography>
       </DialogContent>
       <DialogActions>
 	<Button variant="outlined" onClick={onClickCancel} disabled={inProcessing}>
