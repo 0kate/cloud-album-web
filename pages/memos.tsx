@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogActions,
@@ -24,16 +25,12 @@ import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import Layout from '../components/Layout';
 import MemoList from '../components/MemoList';
 import useApiKey from '../hooks/use-apikey';
 import useMemos from '../hooks/use-memos';
-
-interface Memo {
-  id: string;
-  title: string;
-  done: boolean;
-}
+import { Memo } from '../lib/types';
 
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
@@ -43,6 +40,7 @@ const Memos: NextPage = () => {
   const [selectedMemoIdx, setSelectedMemoIdx] = useState<number|null>(null);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState<'finishing'|'deleting' | null>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [inProcessing, setInProcessing] = useState<boolean>(false);
   const [memos, setMemos] = useState<Memo[]>([]);
 
   const onChangeAddMemoTitleCache = useCallback((event) => {
@@ -61,10 +59,12 @@ const Memos: NextPage = () => {
   }, [selectedMemoIdx, setMenuAnchor, setOpenConfirmationDialog]);
   const onClickAddMemo = useCallback(() => {
     (async () => {
+      setInProcessing(true);
       const newMemo = await addMemo(addMemoTitleCache);
-      console.log(newMemo);
       setMemos(await getMemos());
       setOpenDialog(false);
+      setAddMemoTitleCache('');
+      setInProcessing(false);
     })();
   }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos]);
   const onCloseConfirmationDialog = useCallback(() => {
@@ -89,19 +89,23 @@ const Memos: NextPage = () => {
     if (selectedMemoIdx === null) {
       return;
     }
+    setInProcessing(true);
     await checkDone(memos[selectedMemoIdx]);
     setMemos(await getMemos());
     setSelectedMemoIdx(null);
     setOpenConfirmationDialog(null);
+    setInProcessing(false);
   }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog]);
   const onDeleteMemo = useCallback(async () => {
     if (selectedMemoIdx === null) {
       return;
     }
+    setInProcessing(true);
     await deleteMemo(memos[selectedMemoIdx].id);
     setMemos(await getMemos());
     setSelectedMemoIdx(null);
     setOpenConfirmationDialog(null);
+    setInProcessing(false);
   }, [selectedMemoIdx, setOpenConfirmationDialog]);
 
   useEffect(() => {
@@ -128,7 +132,7 @@ const Memos: NextPage = () => {
 	memos={memos}
 	onClickExpandMenu={onClickExpandMenu}
 	onClickMemo={onClickMemo}
-      />
+      ></MemoList>
       {/* fab for adding memo */}
       <Box position="fixed" bottom={75} right={15}>
 	<Fab color="primary" onClick={onClickFab}><AddIcon /></Fab>
@@ -150,30 +154,32 @@ const Memos: NextPage = () => {
 	  />
 	</DialogContent>
 	<DialogActions>
-	  <Button onClick={onCloseDialog} variant="outlined">CANCEL</Button>
-	  <Button onClick={onClickAddMemo} variant="contained">ADD</Button>
+	  <Button onClick={onCloseDialog} variant="outlined" disabled={inProcessing}>
+	    CANCEL
+	  </Button>
+	  <Button onClick={onClickAddMemo} variant="contained" disabled={inProcessing}>
+	    {inProcessing ? <CircularProgress color="grey" size={25} /> : "ADD"}
+	  </Button>
 	</DialogActions>
       </Dialog>
       {/* Confirmation dialog for finishing memo */}
-      <Dialog open={openConfirmationDialog === 'finishing'} onClose={onCloseConfirmationDialog} fullWidth>
-	<DialogContent>
-	  Are you sure you want to finish this memo.
-	</DialogContent>
-	<DialogActions>
-	  <Button variant="outlined" onClick={onCloseConfirmationDialog}>CANCEL</Button>
-	  <Button variant="contained" onClick={onFinishMemo}>OK</Button>
-	</DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+	message="Are you sure you want to finish this memo?"
+	open={openConfirmationDialog === 'finishing'}
+	onClose={onCloseConfirmationDialog}
+	onClickCancel={onCloseConfirmationDialog}
+	onClickOk={onFinishMemo}
+	inProcessing={inProcessing}
+      ></ConfirmationDialog>
       {/* Configmation dialog for deleting memo */}
-      <Dialog open={openConfirmationDialog === 'deleting'} onClose={onCloseConfirmationDialog} fullWidth>
-	<DialogContent>
-	  Are you sure you want to delete this memo.
-	</DialogContent>
-	<DialogActions>
-	  <Button variant="outlined" onClick={onCloseConfirmationDialog}>CANCEL</Button>
-	  <Button variant="contained" onClick={onDeleteMemo}>OK</Button>
-	</DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+	message="Are you sure you want to delete this memo?"
+	open={openConfirmationDialog === 'deleting'}
+	onClose={onCloseConfirmationDialog}
+	onClickCancel={onCloseConfirmationDialog}
+	onClickOk={onDeleteMemo}
+	inProcessing={inProcessing}
+      ></ConfirmationDialog>
     </Layout>
   );
 };
