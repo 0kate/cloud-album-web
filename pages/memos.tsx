@@ -122,7 +122,7 @@ const Memos: NextPage = () => {
   return (
     <Layout>
       {/* Memo list */}
-      <List>
+      <List style={{ paddingBottom: 70 }}>
 	{memos.map((memo: Memo, idx: number) => (
 	  <Fragment key={idx}>
 	    <ListItem secondaryAction={<IconButton edge="end" data-index={idx} onClick={onClickExpandMenu}><MoreVertIcon /></IconButton>}>
@@ -138,7 +138,7 @@ const Memos: NextPage = () => {
 	))}
       </List>
       {/* Add fab */}
-      <Box position="absolute" bottom={75} right={15}>
+      <Box position="fixed" bottom={75} right={15}>
 	<Fab color="primary" onClick={onClickFab}><AddIcon /></Fab>
       </Box>
       {/* Menu */}
