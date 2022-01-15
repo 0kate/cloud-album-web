@@ -1,5 +1,6 @@
 import axios from 'axios';
 import useApiKey from './use-apikey';
+import { Memo } from '../lib/types';
 
 const useMemos = () => {
   const [apiKey, setApiKey] = useApiKey();
@@ -29,10 +30,17 @@ const useMemos = () => {
     deleteMemo: async (memoId: string) => {
       const response = await instance.delete(`/${memoId}`);
     },
-    checkDone: async (memo: { id: string, title: string, done: boolean }) => {
+    checkDone: async (memo: Memo) => {
       const response = await instance.put(`/${memo.id}`, {
 	'title': memo.title,
 	'done': true,
+      });
+    },
+    moveToList: async (memo: Memo, parentId: string) => {
+      const response = await instance.put(`/${memo.id}`, {
+	'title': memo.title,
+	'done': memo.done,
+	'parent': parentId,
       });
     },
   };

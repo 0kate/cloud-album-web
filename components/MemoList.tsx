@@ -76,7 +76,6 @@ const MemoList: FC<Props> = ({ memos, childrenMemo, openList, onClickExpandMenu,
 			<IconButton
 			  edge="end"
 			  data-index={idx}
-			  onClick={onClickExpandMenu}
 			>
 			  <MoreVertIcon />
 			</IconButton>
@@ -85,7 +84,7 @@ const MemoList: FC<Props> = ({ memos, childrenMemo, openList, onClickExpandMenu,
 		    >
 		      <ListItemButton sx={{ pl: 5 }}>
 			<ListItemIcon>
-			  <Checkbox edge="start" size="small" checked={false} />
+			  <Checkbox edge="start" size="small" checked={child.done} />
 			</ListItemIcon>
 			<ListItemText
 			  primary={

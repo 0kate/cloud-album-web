@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import type { NextPage } from 'next';
 import {
   Box,
@@ -11,8 +11,10 @@ import {
   DialogActions,
   Divider,
   Fab,
+  FormControl,
   FormControlLabel,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemButton,
@@ -23,12 +25,14 @@ import {
   MenuList,
   Radio,
   RadioGroup,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
+  DriveFileMove as DriveFileMoveIcon,
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import ConfirmationDialog from '../components/ConfirmationDialog';
@@ -43,7 +47,7 @@ type ConfirmationDialogType = 'finishing' | 'deleting' | null;
 
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
-  const {addMemo, getMemos, deleteMemo, checkDone} = useMemos();
+  const {addMemo, getMemos, deleteMemo, checkDone, moveToList} = useMemos();
   const [addMemoTitleCache, setAddMemoTitleCache] = useState<string>('');
   const [additionType, setAdditionType] = useState<AdditionType>('memo');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -55,6 +59,12 @@ const Memos: NextPage = () => {
   const [openListMap, setOpenListMap] = useState<{[id: string]: boolean}>({});
   const [parentMemo, setParentMemo] = useState<Memo | null>(null);
   const [childrenMap, setChildrenMap] = useState<{[id: string]: Memo[]}>({});
+  const [openMoveDialog, setOpenMoveDialog] = useState<boolean>(false);
+  const [moveDestination, setMoveDestination] = useState<string | null>(null);
+
+  const lists = useMemo(() => {
+    return memos.filter((memo: Memo) => memo.isList);
+  }, [memos]);
 
   const onChangeAddMemoTitleCache = useCallback((event) => {
     setAddMemoTitleCache(event.target.value);
@@ -147,6 +157,32 @@ const Memos: NextPage = () => {
     setParentMemo(memos[selectedMemoIdx]);
     setOpenDialog(true);
   }, [memos, addMemoTitleCache, selectedMemoIdx]);
+  const onClickMoveToList = useCallback(() => {
+    setOpenMoveDialog(true);
+    setMenuAnchor(null);
+  }, []);
+  const onCloseMoveDialog = useCallback(() => {
+    setOpenMoveDialog(false);
+    setMoveDestination(null);
+  }, []);
+  const onClickMove = useCallback(async () => {
+    if (selectedMemoIdx === null) {
+      return;
+    }
+    if (moveDestination !== null) {
+      setInProcessing(true);
+      await moveToList(memos[selectedMemoIdx], moveDestination);
+      setSelectedMemoIdx(null);
+      setMemos(await getMemos());
+    }
+    setSelectedMemoIdx(null);
+    setOpenMoveDialog(false);
+    setMoveDestination(null);
+    setInProcessing(false);
+  }, [selectedMemoIdx, memos, moveDestination]);
+  const onChangeMoveDestination = useCallback((event) => {
+    setMoveDestination(event.target.value);
+  }, []);
 
   useEffect(() => {
     if (memos.length > 1) {
@@ -193,6 +229,13 @@ const Memos: NextPage = () => {
 	    <Divider />
 	  </Fragment>
 	) : null}
+	<MenuItem onClick={onClickMoveToList} dense>
+	  <ListItemIcon><DriveFileMoveIcon fontSize="small" /></ListItemIcon>
+	  <ListItemText style={{ color: 'grey' }}>
+	    Move to list
+	  </ListItemText>
+	</MenuItem>
+	<Divider />
 	<MenuItem onClick={onClickDeleteMemo} dense>
 	  <ListItemIcon><DeleteIcon fontSize="small" style={{ color: '#ff4242' }} /></ListItemIcon>
 	  <ListItemText style={{ color: '#ff4242' }}>
@@ -230,6 +273,33 @@ const Memos: NextPage = () => {
 	  </Button>
 	  <Button onClick={onClickAddMemo} variant="contained" disabled={inProcessing}>
 	    {inProcessing ? <CircularProgress color="secondary" size={25} /> : 'ADD'}
+	  </Button>
+	</DialogActions>
+      </Dialog>
+      {/* Move memo dialog */}
+      <Dialog open={openMoveDialog} maxWidth="md" onClose={onCloseMoveDialog} fullWidth>
+	<DialogContent>
+	  <FormControl variant="standard" fullWidth>
+	    <InputLabel id="move-select-label">Move to</InputLabel>
+	    <Select
+	      labelId="move-select-label"
+	      value={moveDestination}
+	      onChange={onChangeMoveDestination}
+	    >
+	      {lists.map((list: Memo) => (
+		<MenuItem value={list.id}>
+		  <Typography variant="subtitle1" style={{ color: 'grey' }}>{list.title}</Typography>
+		</MenuItem>
+	      ))}
+	    </Select>
+	  </FormControl>
+	</DialogContent>
+	<DialogActions>
+	  <Button onClick={onCloseMoveDialog} variant="outlined" disabled={inProcessing}>
+	    CANCEL
+	  </Button>
+	  <Button onClick={onClickMove} variant="contained" disabled={inProcessing}>
+	    {inProcessing ? <CircularProgress color="secondary" size={25} /> : 'MOVE'}
 	  </Button>
 	</DialogActions>
       </Dialog>
