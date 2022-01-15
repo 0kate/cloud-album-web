@@ -18,12 +18,14 @@ import {
   Menu,
   MenuItem,
   TextField,
+  Typography,
 } from '@mui/material';
 import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import Layout from '../components/Layout';
+import MemoList from '../components/MemoList';
 import useApiKey from '../hooks/use-apikey';
 import useMemos from '../hooks/use-memos';
 
@@ -122,22 +124,12 @@ const Memos: NextPage = () => {
   return (
     <Layout>
       {/* Memo list */}
-      <List style={{ paddingBottom: 70 }}>
-	{memos.map((memo: Memo, idx: number) => (
-	  <Fragment key={idx}>
-	    <ListItem secondaryAction={<IconButton edge="end" data-index={idx} onClick={onClickExpandMenu}><MoreVertIcon /></IconButton>}>
-	      <ListItemButton data-index={idx} onClick={onClickMemo} dense>
-		<ListItemIcon>
-		  <Checkbox edge="start" checked={memo.done} />
-		</ListItemIcon>
-		<ListItemText primary={memo.title} />
-	      </ListItemButton>
-	    </ListItem>
-	    <Divider />
-	  </Fragment>
-	))}
-      </List>
-      {/* Add fab */}
+      <MemoList
+	memos={memos}
+	onClickExpandMenu={onClickExpandMenu}
+	onClickMemo={onClickMemo}
+      />
+      {/* fab for adding memo */}
       <Box position="fixed" bottom={75} right={15}>
 	<Fab color="primary" onClick={onClickFab}><AddIcon /></Fab>
       </Box>
