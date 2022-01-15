@@ -8,9 +8,8 @@ const useMemos = () => {
   const instance = axios.create({
     baseURL: `${apiHost}/album/api/memos`,
   });
-  instance.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
   instance.defaults.headers.common['X-API-KEY'] = apiKey;
-  instance.defaults.headers.post['Content-Type'] = 'application/json';
+  instance.defaults.headers.common['Content-Type'] = 'application/json';
 
   return {
     getMemos: async () => {
