@@ -17,9 +17,10 @@ const useMemos = () => {
       const responseJson = response.data;
       return responseJson.memos;
     },
-    addMemo: async (title: string) => {
+    addMemo: async (title: string, isList: boolean = false) => {
       const response = await instance.post('/', {
 	'title': title,
+	'isList': isList,
       });
       const responseJson = response.data;
       return responseJson;
