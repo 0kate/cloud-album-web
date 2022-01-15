@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
           <meta name="description" content="Description" />
           <meta name="keywords" content="Keywords" />
-	  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           <title>Albums</title>
 
           <link rel="manifest" href="/album/manifest.json" />
@@ -46,7 +46,36 @@ function MyApp({ Component, pageProps }: AppProps) {
             sizes="32x32"
           />
           <link rel="apple-touch-icon" href="/album/apple-touch-icon.png"></link>
-	  <link rel="apple-touch-startup-image" href="/album/icon-512x512.png"></link>
+	  {/* iPhone Xs Max (1242px x 2688px) */} 
+	  <link
+	    rel="apple-touch-startup-image"
+	    media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+	    href="/apple-launch-1242x2688.png"
+	  />
+	  {/* iPhone Xr (828px x 1792px) */}
+	  <link
+	    rel="apple-touch-startup-image"
+	    media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+	    href="/apple-launch-828x1792.png"
+	  />
+	  {/* iPhone X, Xs (1125px x 2436px) */}
+	  <link
+	    rel="apple-touch-startup-image"
+	    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+	    href="/apple-launch-1125x2436.png"
+	  />
+	  {/* iPhone 8 Plus, 7 Plus, 6s Plus, 6 Plus (1242px x 2208px) */}
+	  <link
+	    rel="apple-touch-startup-image"
+	    media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
+	    href="/apple-launch-1242x2208.png"
+	  />
+	  {/* iPhone 8, 7, 6s, 6 (750px x 1334px) */}
+	  <link
+	    rel="apple-touch-startup-image"
+	    media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+	    href="/apple-launch-750x1334.png"
+	  />
 	</Head>
 	<Component {...pageProps} />
       </ApiKeyContext.Provider>
