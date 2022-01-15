@@ -12,15 +12,16 @@ const useMemos = () => {
   instance.defaults.headers.common['Content-Type'] = 'application/json';
 
   return {
-    getMemos: async () => {
-      const response = await instance.get('/');
+    getMemos: async (parentId: string = '') => {
+      const response = await instance.get(`/${parentId}`);
       const responseJson = response.data;
       return responseJson.memos;
     },
-    addMemo: async (title: string, isList: boolean = false) => {
+    addMemo: async (title: string, isList: boolean = false, parentId: string | null = null) => {
       const response = await instance.post('/', {
 	'title': title,
 	'isList': isList,
+	'parent': parentId,
       });
       const responseJson = response.data;
       return responseJson;

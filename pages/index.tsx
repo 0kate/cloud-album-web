@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import {
   Box,
+  Button,
+  Card,
   Typography,
 } from '@mui/material';
 import Layout from '../components/Layout';
@@ -26,9 +28,18 @@ const Home: NextPage = () => {
   return (
     <Layout fullWidth>
       <Box display="flex">
-	<Typography variant="h4">{diffDays}</Typography>
-	<Box marginTop="auto">
-	  <Typography noWrap>days</Typography>
+	<Box
+	  position="absolute"
+	  height="100px"
+	  width="100%"
+	  zIndex={0}
+	>
+	</Box>
+	<Box display="flex" zIndex={1}>
+	  <Typography variant="h4">{diffDays}</Typography>
+	  <Box marginTop="auto">
+	    <Typography>days</Typography>
+	  </Box>
 	</Box>
       </Box>
     </Layout>

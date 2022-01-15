@@ -13,13 +13,14 @@ import {
   Fab,
   FormControlLabel,
   IconButton,
+  List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  List,
-  ListItem,
   Menu,
   MenuItem,
+  MenuList,
   Radio,
   RadioGroup,
   TextField,
@@ -27,6 +28,7 @@ import {
 } from '@mui/material';
 import {
   Add as AddIcon,
+  Delete as DeleteIcon,
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import ConfirmationDialog from '../components/ConfirmationDialog';
@@ -38,9 +40,6 @@ import { Memo } from '../lib/types';
 
 type AdditionType = 'memo' | 'list';
 type ConfirmationDialogType = 'finishing' | 'deleting' | null;
-type OpenListFlags = {
-  [id: string]: boolean;
-};
 
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
@@ -48,12 +47,14 @@ const Memos: NextPage = () => {
   const [addMemoTitleCache, setAddMemoTitleCache] = useState<string>('');
   const [additionType, setAdditionType] = useState<AdditionType>('memo');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [selectedMemoIdx, setSelectedMemoIdx] = useState<number|null>(null);
+  const [selectedMemoIdx, setSelectedMemoIdx] = useState<number | null>(null);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState<ConfirmationDialogType>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [inProcessing, setInProcessing] = useState<boolean>(false);
   const [memos, setMemos] = useState<Memo[]>([]);
-  const [openList, setOpenList] = useState<OpenListFlags>({});
+  const [openListMap, setOpenListMap] = useState<{[id: string]: boolean}>({});
+  const [parentMemo, setParentMemo] = useState<Memo | null>(null);
+  const [childrenMap, setChildrenMap] = useState<{[id: string]: Memo[]}>({});
 
   const onChangeAddMemoTitleCache = useCallback((event) => {
     setAddMemoTitleCache(event.target.value);
@@ -73,14 +74,16 @@ const Memos: NextPage = () => {
     (async () => {
       setInProcessing(true);
       const addAsList = additionType === 'list';
-      const newMemo = await addMemo(addMemoTitleCache, addAsList);
+      const parentId = parentMemo !== null ? parentMemo.id : null;
+      const newMemo = await addMemo(addMemoTitleCache, addAsList, parentId);
       setMemos(await getMemos());
       setOpenDialog(false);
       setAddMemoTitleCache('');
       setAdditionType('memo');
+      setParentMemo(null);
       setInProcessing(false);
     })();
-  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos, additionType]);
+  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos, additionType, parentMemo]);
   const onCloseConfirmationDialog = useCallback(() => {
     setOpenConfirmationDialog(null);
   }, [setOpenConfirmationDialog]);
@@ -98,6 +101,7 @@ const Memos: NextPage = () => {
   const onCloseDialog = useCallback(() => {
     setOpenDialog(false);
     setAddMemoTitleCache('');
+    setParentMemo(null);
     setAdditionType('memo');
   }, [setOpenDialog, setAddMemoTitleCache, setAdditionType]);
   const onFinishMemo = useCallback(async () => {
@@ -125,6 +129,24 @@ const Memos: NextPage = () => {
   const onChangeAdditionType = useCallback((event) => {
     setAdditionType(event.target.value);
   }, [setAdditionType]);
+  const onClickList = useCallback(async (target: Memo) => {
+    if (!openListMap[target.id]) {
+      const children = await getMemos(target.id);
+      const newChildrenMap = { ...childrenMap };
+      newChildrenMap[target.id] = children;
+      setChildrenMap(newChildrenMap);
+    }
+    const newOpenListMap = { ...openListMap };
+    newOpenListMap[target.id] = !(newOpenListMap[target.id] || false);
+    setOpenListMap(newOpenListMap);
+  }, [childrenMap, openListMap]);
+  const onClickAddChild = useCallback(async () => {
+    if (selectedMemoIdx === null) {
+      return;
+    }
+    setParentMemo(memos[selectedMemoIdx]);
+    setOpenDialog(true);
+  }, [memos, addMemoTitleCache, selectedMemoIdx]);
 
   useEffect(() => {
     if (memos.length > 1) {
@@ -148,8 +170,11 @@ const Memos: NextPage = () => {
       {/* Memo list */}
       <MemoList
 	memos={memos}
+	childrenMemo={childrenMap}
+	openList={openListMap}
 	onClickExpandMenu={onClickExpandMenu}
 	onClickMemo={onClickMemo}
+	onClickList={onClickList}
       ></MemoList>
       {/* fab for adding memo */}
       <Box position="fixed" bottom={75} right={15}>
@@ -157,7 +182,23 @@ const Memos: NextPage = () => {
       </Box>
       {/* Menu */}
       <Menu open={menuAnchor !== null} anchorEl={menuAnchor} onClose={onCloseMenu}>
-	<MenuItem onClick={onClickDeleteMemo} dense>Delete</MenuItem>
+	{selectedMemoIdx !== null && memos[selectedMemoIdx].isList ? (
+	  <Fragment>
+	    <MenuItem onClick={onClickAddChild} dense>
+	      <ListItemIcon><AddIcon fontSize="small" /></ListItemIcon>
+	      <ListItemText style={{ color: 'grey' }}>
+		Add child
+	      </ListItemText>
+	    </MenuItem>
+	    <Divider />
+	  </Fragment>
+	) : null}
+	<MenuItem onClick={onClickDeleteMemo} dense>
+	  <ListItemIcon><DeleteIcon fontSize="small" style={{ color: '#ff4242' }} /></ListItemIcon>
+	  <ListItemText style={{ color: '#ff4242' }}>
+	    Delete
+	  </ListItemText>
+	</MenuItem>
       </Menu>
       {/* Add memo dialog */}
       <Dialog open={openDialog} maxWidth="md" onClose={onCloseDialog} fullWidth>
