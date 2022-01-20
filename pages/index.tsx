@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import Layout from '../components/Layout';
 import useApiKey from '../hooks/use-apikey';
+import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
@@ -27,21 +28,12 @@ const Home: NextPage = () => {
 
   return (
     <Layout fullWidth>
-      <Box display="flex">
-	<Box
-	  position="absolute"
-	  height="100px"
-	  width="100%"
-	  zIndex={0}
-	>
-	</Box>
-	<Box display="flex" zIndex={1}>
-	  <Typography variant="h4">{diffDays}</Typography>
-	  <Box marginTop="auto">
-	    <Typography>days</Typography>
-	  </Box>
-	</Box>
-      </Box>
+      <div className={styles.background}>
+	<div className={styles.days}>
+	  <span className={styles.daysNum}>{diffDays}</span>
+	  <span>days</span>
+	</div>
+      </div>
     </Layout>
   );
 };
