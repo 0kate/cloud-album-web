@@ -1,7 +1,7 @@
 .background {
     display: flex !important;
-    width: 115% !important;
-    min-height: 95vh !important;
+    width: 100% !important;
+    min-height: 100vh !important;
     background: url('/album/home-background.jpg') no-repeat center / cover !important;
 }
 
