@@ -18,7 +18,7 @@ const Layout: FC<Props> = ({ children, fullWidth }) => {
   return (
     <Fragment>
       <Header />
-      <div styles={contentStyles}>
+      <div style={contentStyles}>
 	{children}
       </div>
       <BottomNav />
