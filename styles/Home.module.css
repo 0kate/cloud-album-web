@@ -1,13 +1,16 @@
 .background {
-    display: flex !important;
-    width: 100% !important;
-    min-height: 100vh !important;
-    background: url('/album/home-background.jpg') no-repeat center / cover !important;
+    display: flex;
+    width: 100%;
+    min-height: 90vh;
+    background-image: url('/album/home-background.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 .background::after {
     content: "" !important;
-    background: rgba(0, 0, 0, 0.4) !important;
+    background: rgba(0, 0, 0, 0.45) !important;
     position: absolute !important;
     height: 100%;
     width: 100%;
