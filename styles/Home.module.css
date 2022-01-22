@@ -1,7 +1,8 @@
 .background {
     display: flex;
+    justify-content: center;
     width: 100%;
-    min-height: 90vh;
+    min-height: 92vh;
     background-image: url('/album/home-background.jpg');
     background-repeat: no-repeat;
     background-position: center;
@@ -18,16 +19,36 @@
     left: 0;
 }
 
-.days {
+.textContainer {
     position: absolute !important;
-    color: white;
     z-index: 1 !important;
-    top: 43%;
-    left: 40%;
+    top: 35%;
+    color: white;
 }
 
 .daysNum {
     font-weight: bold;
-    font-size: 40px;
-    padding-right: 5px;
+    font-size: 55px;
+    padding-right: 10px;
+}
+
+.daysText {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.startDate {
+    font-size: 15px;
+    padding-top: 8px;
+    text-align: center;
+}
+
+.anniversaryDrawer {
+    background-color: white;
+    height: 100%;
+}
+
+.anniversariesTitle {
+    font-weight: bold;
+    color: grey;
 }

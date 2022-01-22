@@ -25,8 +25,8 @@ const BottomNav: FC<Props> = () => {
   }, [router]);
 
   return (
-    <Box position="fixed" bottom={0} top="auto" width="100%" zIndex={2}>
-      <Paper elevation={3}>
+    <Box position="fixed" bottom={0} top="auto" width="100%" zIndex={9999}>
+      <Paper elevation={10}>
 	<BottomNavigation value={title} showLabels>
 	  <BottomNavigationAction value="Home" label="Home" icon={<HomeIcon />} onClick={() => onClickNav('/')} />
 	  <BottomNavigationAction value="Albums" label="Albums" icon={<PhotoLibraryIcon />} onClick={() => onClickNav('/albums')} />
