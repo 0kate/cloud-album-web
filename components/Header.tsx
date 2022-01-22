@@ -25,16 +25,13 @@ const Header: FC<Props> = () => {
   }, [setApiKey]);
 
   return (
-    <AppBar className={styles.appbar} position="sticky" elevation={0}>
+    <AppBar className={styles.appbar} position="sticky" elevation={3}>
       <Toolbar>
         <Typography className={styles.title} variant="h6">{title}</Typography>
         <Box width="100%" display="flex">
           <Box marginLeft="auto">
-            <IconButton>
-              <AppsIcon className={styles.icon} />
-            </IconButton>
 	    <IconButton onClick={onClickReset}>
-	      <ExitToAppIcon className={styles.icon} />
+	      <ExitToAppIcon />
 	    </IconButton>
           </Box>
         </Box>

@@ -1,12 +1,8 @@
 .appbar {
     background: white !important;
+    color: #505050 !important;
 }
 
 .title {
     font-weight: bold !important;
-    color: black !important;
-}
-
-.icon {
-    color: black !important;
 }
