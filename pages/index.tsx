@@ -37,6 +37,13 @@ const Home: NextPage = () => {
   const diffTime = Math.abs(currentDate.getTime() - startDate.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+  useEffect(() => {
+    (async () => {
+      const anniversaries = await getAnniversaries();
+      setAnniversaries(anniversaries);
+    })();
+  }, []);
+
   if (apiKey.length === 0) {
     return (
       <Layout>
@@ -44,13 +51,6 @@ const Home: NextPage = () => {
       </Layout>
     );
   }
-
-  useEffect(() => {
-    (async () => {
-      const anniversaries = await getAnniversaries();
-      setAnniversaries(anniversaries);
-    })();
-  }, []);
 
   return (
     <Layout fullWidth>
@@ -117,7 +117,7 @@ const Home: NextPage = () => {
 	      </Typography>
 	      <List>
 		{anniversaries.map(anniversary => (
-		  <Fragment>
+		  <Fragment key={anniversary.id}>
 		    <ListItem>
 		      <ListItemIcon>
 			{anniversary.type === 'birthday' ? <CakeIcon /> : <CelebrationIcon />}
