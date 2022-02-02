@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import {
   Box,
@@ -19,14 +19,18 @@ import {
 } from '@mui/icons-material';
 import { Global } from '@emotion/react';
 import Layout from '../components/Layout';
+import useAnniversaries from '../hooks/use-anniversaries';
 import useApiKey from '../hooks/use-apikey';
+import { Anniversary } from '../lib/types';
 import styles from '../styles/Home.module.css';
 
 const drawBleeding = 168;
 
 const Home: NextPage = () => {
+  const { getAnniversaries } = useAnniversaries();
   const [apiKey, setApiKey] = useApiKey();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [anniversaries, setAnniversaries] = useState<Anniversary[]>([]);
 
   const startDate: Date = new Date('2021-10-11');
   const currentDate: Date = new Date();
@@ -40,6 +44,13 @@ const Home: NextPage = () => {
       </Layout>
     );
   }
+
+  useEffect(() => {
+    (async () => {
+      const anniversaries = await getAnniversaries();
+      setAnniversaries(anniversaries);
+    })();
+  }, []);
 
   return (
     <Layout fullWidth>
@@ -105,15 +116,20 @@ const Home: NextPage = () => {
 		Anniversaries
 	      </Typography>
 	      <List>
-		<ListItem>
-		  <ListItemIcon><CakeIcon /></ListItemIcon>
-		  <ListItemText primary="yyyy/mm/dd - birthday" />
-		</ListItem>
-		<Divider />
-		<ListItem>
-		  <ListItemIcon><CelebrationIcon /></ListItemIcon>
-		  <ListItemText primary="yyyy/mm/dd - four monthsary" />
-		</ListItem>
+		{anniversaries.map(anniversary => (
+		  <Fragment>
+		    <ListItem>
+		      <ListItemIcon>
+			{anniversary.type === 'birthday' ? <CakeIcon /> : <CelebrationIcon />}
+		      </ListItemIcon>
+		      <ListItemText
+		        className={styles.anniversaryTitle}
+			primary={`${anniversary.date.replace('T00:00:00', '')} - ${anniversary.title}`}
+		      />
+		    </ListItem>
+		    <Divider />
+		  </Fragment>
+		))}
 	      </List>
 	    </div>
 	  </div>

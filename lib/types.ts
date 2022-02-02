@@ -5,3 +5,10 @@ export interface Memo {
   isList: boolean;
   parent: string | null;
 }
+
+export interface Anniversary {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+}
