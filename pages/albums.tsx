@@ -28,7 +28,6 @@ const Albums: NextPage = () => {
     const instance = axios.create({
       baseURL: `${apiHost}/album/api`,
     });
-    instance.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
     instance.defaults.headers.common['X-API-KEY'] = apiKey;
     instance.defaults.headers.post['Content-Type'] = 'application/json';
     return instance;
@@ -38,18 +37,11 @@ const Albums: NextPage = () => {
     setSelectedAlbum(album);
 
     if (album === undefined) return;
-    const response = await api.get(`/albums/${album}`);
+    const response = await api.get(`/albums/${album}/photos`);
     const responseJson = response.data;
     console.log(responseJson);
 
-    const newImages = [];
-    for (let image of responseJson['images']) {
-      const response = await api.get(`/albums/${album}/${image.name}`);
-      const responseJson = response.data;
-
-      newImages.push(responseJson.content);
-      setImages([...newImages]);
-    }
+    setImages(responseJson['images']);
   }, [api, setSelectedAlbum, setImages]);
   const onCloseGallery = useCallback(() => {
     setSelectedAlbum(undefined);
@@ -71,17 +63,14 @@ const Albums: NextPage = () => {
       const albums = responseJson['albums'];
       setAlbums(albums);
 
-      await Promise.all(albums.map((album: Album) => {
-	return new Promise(async (resolve, reject) => {
-	  const response = await api.get(`/albums/${album.name}/thumbnail`);
-	  const responseJson = response.data;
+      for (let album of albums) {
+	const response = await api.get(`/albums/${album.name}/thumbnail`);
+	const responseJson = response.data;
 
-          const thumbnailContent = responseJson.content;
-	  thumbnails[album.name] = thumbnailContent;
-	  resolve(undefined);
-	});
-      }));
-      setThumbnails({ ...thumbnails });
+	const thumbnailContent = responseJson.content;
+	thumbnails[album.name] = thumbnailContent;
+	setThumbnails({ ...thumbnails });
+      }
     } catch (err) {
       console.log(err);
     }
