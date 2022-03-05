@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 import useApiKey from './use-apikey';
 import { Memo } from '../lib/types';
 
@@ -13,8 +14,15 @@ const useAnniversaries = () => {
   instance.defaults.headers.common['Content-Type'] = 'application/json';
 
   return {
-    getAnniversaries: async (parentId: string = '') => {
-      const response = await instance.get(`/?sort=date`);
+    getAnniversaries: async ({sort = 'date', fromDate = null}: {sort: string, fromDate: Date | null}) => {
+      let query = '';
+      if (sort !== null) {
+	query += `?sort=${sort}`;
+      }
+      if (fromDate !== null) {
+	query += `&from=${moment(fromDate).format('YYYY-MM-DD')}`;
+      }
+      const response = await instance.get(`/${query}`);
       const responseJson = response.data;
       return responseJson.anniversaries;
     },

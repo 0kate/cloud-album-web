@@ -39,7 +39,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const anniversaries = await getAnniversaries();
+      const anniversaries = await getAnniversaries({sort: 'date', fromDate: new Date()});
       setAnniversaries(anniversaries);
     })();
   }, []);
