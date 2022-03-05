@@ -86,7 +86,13 @@ const Memos: NextPage = () => {
     const newChildrenMap = { ...childrenMap };
     newChildrenMap[child.parent] = children;
     setChildrenMap(newChildrenMap);
-  }, [childrenMap]);
+
+    const newMemoOf: MemoOfMap = {...memoOf};
+    for (let child of children) {
+      newMemoOf[child.id] = child;
+    }
+    setMemoOf(newMemoOf);
+  }, [memoOf, childrenMap]);
 
   const onChangeAddMemoTitleCache = useCallback((event) => {
     setAddMemoTitleCache(event.target.value);
