@@ -44,6 +44,7 @@ import { Memo } from '../lib/types';
 
 type AdditionType = 'memo' | 'list';
 type ConfirmationDialogType = 'finishing' | 'deleting' | null;
+type MemoOfMap = {[id: string]: Memo};
 
 const Memos: NextPage = () => {
   const [apiKey, setApiKey] = useApiKey();
@@ -51,11 +52,12 @@ const Memos: NextPage = () => {
   const [addMemoTitleCache, setAddMemoTitleCache] = useState<string>('');
   const [additionType, setAdditionType] = useState<AdditionType>('memo');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [selectedMemoIdx, setSelectedMemoIdx] = useState<number | null>(null);
+  const [selectedMemoId, setSelectedMemoId] = useState<string | null>(null);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState<ConfirmationDialogType>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [inProcessing, setInProcessing] = useState<boolean>(false);
   const [memos, setMemos] = useState<Memo[]>([]);
+  const [memoOf, setMemoOf] = useState<MemoOfMap>({});
   const [openListMap, setOpenListMap] = useState<{[id: string]: boolean}>({});
   const [parentMemo, setParentMemo] = useState<Memo | null>(null);
   const [childrenMap, setChildrenMap] = useState<{[id: string]: Memo[]}>({});
@@ -66,45 +68,66 @@ const Memos: NextPage = () => {
     return memos.filter((memo: Memo) => memo.isList);
   }, [memos]);
 
+  const updateMemos = useCallback((newMemos) => {
+    setMemos(newMemos);
+
+    const newMemoOf: MemoOfMap = {};
+    for (let memo of newMemos) {
+      newMemoOf[memo.id] = memo;
+    }
+    setMemoOf(newMemoOf);
+  }, []);
+  const updateChildren = useCallback(async (child: Memo) => {
+    if (child.parent === null) {
+      return;
+    }
+
+    const children = await getMemos(child.parent);
+    const newChildrenMap = { ...childrenMap };
+    newChildrenMap[child.parent] = children;
+    setChildrenMap(newChildrenMap);
+  }, [childrenMap]);
+
   const onChangeAddMemoTitleCache = useCallback((event) => {
     setAddMemoTitleCache(event.target.value);
   }, [setAddMemoTitleCache]);
   const onClickMemo = useCallback((event) => {
-    setSelectedMemoIdx(event.currentTarget.dataset.index);
+    setSelectedMemoId(event.currentTarget.dataset.id);
     setOpenConfirmationDialog('finishing');
-  }, [setSelectedMemoIdx, setOpenConfirmationDialog]);
+  }, [setSelectedMemoId, setOpenConfirmationDialog]);
   const onClickDeleteMemo = useCallback((event) => {
-    if (selectedMemoIdx === null) {
+    if (selectedMemoId === null) {
       return;
     }
     setMenuAnchor(null);
     setOpenConfirmationDialog('deleting');
-  }, [selectedMemoIdx, setMenuAnchor, setOpenConfirmationDialog]);
+  }, [selectedMemoId, setMenuAnchor, setOpenConfirmationDialog]);
   const onClickAddMemo = useCallback(() => {
     (async () => {
       setInProcessing(true);
       const addAsList = additionType === 'list';
       const parentId = parentMemo !== null ? parentMemo.id : null;
       const newMemo = await addMemo(addMemoTitleCache, addAsList, parentId);
-      setMemos(await getMemos());
+      const newMemos = await getMemos();
+      updateMemos(newMemos);
       setOpenDialog(false);
       setAddMemoTitleCache('');
       setAdditionType('memo');
       setParentMemo(null);
       setInProcessing(false);
     })();
-  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, setMemos, additionType, parentMemo]);
+  }, [addMemoTitleCache, setOpenDialog, addMemo, getMemos, additionType, parentMemo]);
   const onCloseConfirmationDialog = useCallback(() => {
     setOpenConfirmationDialog(null);
   }, [setOpenConfirmationDialog]);
   const onClickExpandMenu = useCallback((event) => {
-    setSelectedMemoIdx(event.currentTarget.dataset.index);
+    setSelectedMemoId(event.currentTarget.dataset.id);
     setMenuAnchor(event.currentTarget);
-  }, [setMenuAnchor, setSelectedMemoIdx]);
+  }, [setMenuAnchor, setSelectedMemoId]);
   const onCloseMenu = useCallback(() => {
     setMenuAnchor(null);
-    setSelectedMemoIdx(null);
-  }, [setMenuAnchor, setSelectedMemoIdx]);
+    setSelectedMemoId(null);
+  }, [setMenuAnchor, setSelectedMemoId]);
   const onClickFab = useCallback(() => {
     setOpenDialog(true);
   },  [setOpenDialog]);
@@ -115,27 +138,32 @@ const Memos: NextPage = () => {
     setAdditionType('memo');
   }, [setOpenDialog, setAddMemoTitleCache, setAdditionType]);
   const onFinishMemo = useCallback(async () => {
-    if (selectedMemoIdx === null) {
+    if (selectedMemoId === null) {
       return;
     }
     setInProcessing(true);
-    await checkDone(memos[selectedMemoIdx]);
-    setSelectedMemoIdx(null);
-    setMemos(await getMemos());
+    await checkDone(memoOf[selectedMemoId]);
+    setSelectedMemoId(null);
+
+    const newMemos = await getMemos();
+    updateMemos(newMemos);
+    updateChildren(memoOf[selectedMemoId]);
+
     setOpenConfirmationDialog(null);
     setInProcessing(false);
-  }, [memos, setMemos, selectedMemoIdx, setOpenConfirmationDialog]);
+  }, [memos, memoOf, setMemoOf, selectedMemoId, setOpenConfirmationDialog]);
   const onDeleteMemo = useCallback(async () => {
-    if (selectedMemoIdx === null) {
+    if (selectedMemoId === null) {
       return;
     }
     setInProcessing(true);
-    await deleteMemo(memos[selectedMemoIdx].id);
-    setSelectedMemoIdx(null);
-    setMemos(await getMemos());
+    await deleteMemo(selectedMemoId);
+    setSelectedMemoId(null);
+    const newMemos = await getMemos();
+    updateMemos(newMemos);
     setOpenConfirmationDialog(null);
     setInProcessing(false);
-  }, [selectedMemoIdx, setOpenConfirmationDialog]);
+  }, [selectedMemoId, setOpenConfirmationDialog]);
   const onChangeAdditionType = useCallback((event) => {
     setAdditionType(event.target.value);
   }, [setAdditionType]);
@@ -145,18 +173,24 @@ const Memos: NextPage = () => {
       const newChildrenMap = { ...childrenMap };
       newChildrenMap[target.id] = children;
       setChildrenMap(newChildrenMap);
+
+      const newMemoOf = {...memoOf};
+      for (let child of children) {
+	newMemoOf[child.id] = child;
+      }
+      setMemoOf(newMemoOf);
     }
     const newOpenListMap = { ...openListMap };
     newOpenListMap[target.id] = !(newOpenListMap[target.id] || false);
     setOpenListMap(newOpenListMap);
-  }, [childrenMap, openListMap]);
+  }, [childrenMap, memoOf, openListMap]);
   const onClickAddChild = useCallback(async () => {
-    if (selectedMemoIdx === null) {
+    if (selectedMemoId === null) {
       return;
     }
-    setParentMemo(memos[selectedMemoIdx]);
+    setParentMemo(memoOf[selectedMemoId]);
     setOpenDialog(true);
-  }, [memos, addMemoTitleCache, selectedMemoIdx]);
+  }, [memos, memoOf, addMemoTitleCache, selectedMemoId]);
   const onClickMoveToList = useCallback(() => {
     setOpenMoveDialog(true);
     setMenuAnchor(null);
@@ -166,20 +200,21 @@ const Memos: NextPage = () => {
     setMoveDestination(null);
   }, []);
   const onClickMove = useCallback(async () => {
-    if (selectedMemoIdx === null) {
+    if (selectedMemoId === null) {
       return;
     }
     if (moveDestination !== null) {
       setInProcessing(true);
-      await moveToList(memos[selectedMemoIdx], moveDestination);
-      setSelectedMemoIdx(null);
-      setMemos(await getMemos());
+      await moveToList(memoOf[selectedMemoId], moveDestination);
+      setSelectedMemoId(null);
+      const newMemos = await getMemos();
+      updateMemos(newMemos);
     }
-    setSelectedMemoIdx(null);
+    setSelectedMemoId(null);
     setOpenMoveDialog(false);
     setMoveDestination(null);
     setInProcessing(false);
-  }, [selectedMemoIdx, memos, moveDestination]);
+  }, [selectedMemoId, memos, memoOf, moveDestination]);
   const onChangeMoveDestination = useCallback((event) => {
     setMoveDestination(event.target.value);
   }, []);
@@ -189,7 +224,8 @@ const Memos: NextPage = () => {
       return;
     }
     (async () => {
-      setMemos(await getMemos());
+      const newMemos = await getMemos();
+      updateMemos(newMemos);
     })();
   }, []);
 
@@ -218,7 +254,7 @@ const Memos: NextPage = () => {
       </Box>
       {/* Menu */}
       <Menu open={menuAnchor !== null} anchorEl={menuAnchor} onClose={onCloseMenu}>
-	{selectedMemoIdx !== null && memos[selectedMemoIdx].isList ? (
+	{selectedMemoId !== null && memoOf[selectedMemoId].isList ? (
 	  <Fragment>
 	    <MenuItem onClick={onClickAddChild} dense>
 	      <ListItemIcon><AddIcon fontSize="small" /></ListItemIcon>

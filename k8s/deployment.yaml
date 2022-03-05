@@ -16,6 +16,7 @@ spec:
       labels:
         app: cloud-album-web
     spec:
+      serviceAccountName: ghcr
       containers:
       - image: ghcr.io/0kate/cloud-album-web:latest
         name: cloud-album-web

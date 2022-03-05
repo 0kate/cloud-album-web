@@ -31,13 +31,13 @@ interface Props {
 const MemoList: FC<Props> = ({ memos, childrenMemo, openList, onClickExpandMenu, onClickMemo, onClickList }: Props) => {
   return (
     <List className={styles.memoList}>
-      {memos.map((memo: Memo, idx: number) => (
-	<Fragment key={idx}>
+      {memos.map((memo: Memo) => (
+	<Fragment key={memo.id}>
 	  <ListItem
 	    secondaryAction={
 	      <IconButton
 		edge="end"
-		data-index={idx}
+		data-id={memo.id}
 		onClick={onClickExpandMenu}
 	      >
 		<MoreVertIcon />
@@ -45,23 +45,23 @@ const MemoList: FC<Props> = ({ memos, childrenMemo, openList, onClickExpandMenu,
 	    }
 	    dense
 	  >
-	    <ListItemButton data-index={idx} onClick={memo.isList ? () => onClickList(memo) : onClickMemo} dense>
+	    <ListItemButton data-id={memo.id} onClick={memo.isList ? () => onClickList(memo) : onClickMemo} dense>
 	      <ListItemIcon>
 		{memo.isList ?
-		  openList[memo.id] ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />
+		 openList[memo.id] ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />
 		: (
 		  <Checkbox edge="start" size="small" checked={memo.done} />
 		)}
 	      </ListItemIcon>
 	      <ListItemText
-	      primary={
-		<Typography
-		  className={styles.memoTitle}
-		  variant="caption"
-		>
-		  {memo.title}
-		</Typography>
-	      }
+		primary={
+		  <Typography
+		    className={styles.memoTitle}
+		    variant="caption"
+		  >
+		    {memo.title}
+		  </Typography>
+		}
 	      />
 	    </ListItemButton>
 	  </ListItem>
@@ -75,38 +75,38 @@ const MemoList: FC<Props> = ({ memos, childrenMemo, openList, onClickExpandMenu,
 		      secondaryAction={
 			<IconButton
 			  edge="end"
-			  data-index={idx}
+			  data-id={child.id}
 			>
 			  <MoreVertIcon />
 			</IconButton>
 		      }
 		      dense
 		    >
-		      <ListItemButton sx={{ pl: 5 }}>
-			<ListItemIcon>
-			  <Checkbox edge="start" size="small" checked={child.done} />
-			</ListItemIcon>
-			<ListItemText
-			  primary={
-			    <Typography
-			      className={styles.memoTitle}
-			      variant="caption"
-			    >
-			      {child.title}
-			    </Typography>
-			  }
-			/>
-		      </ListItemButton>
-		    </ListItem>
-		    <Divider />
+			<ListItemButton data-id={child.id} onClick={child.isList ? () => onClickList(child) : onClickMemo} sx={{ pl: 5 }} dense>
+			  <ListItemIcon>
+			    <Checkbox edge="start" size="small" checked={child.done} />
+			  </ListItemIcon>
+			  <ListItemText
+			    primary={
+			      <Typography
+				className={styles.memoTitle}
+				variant="caption"
+			      >
+				{child.title}
+			      </Typography>
+			    }
+			  />
+			</ListItemButton>
+		      </ListItem>
+		      <Divider />
 		  </Fragment>
 		))}
-	      </List>
+		    </List>
 	    </Collapse>
 	  ) : null}
 	</Fragment>
       ))}
-    </List>
+	      </List>
   );
 };
 

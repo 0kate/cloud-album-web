@@ -34,6 +34,7 @@ const useMemos = () => {
       const response = await instance.put(`/${memo.id}`, {
 	'title': memo.title,
 	'done': true,
+	'parent': memo.parent,
       });
     },
     moveToList: async (memo: Memo, parentId: string) => {
