@@ -3,10 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
-    "lint": "next lint --dir pages --dir components --dir hooks",
-    "export": "next export"
+    "lint": "next lint --dir pages --dir components --dir hooks"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",
