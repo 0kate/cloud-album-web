@@ -35,20 +35,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 	  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
           <title>Albums</title>
 
-          <link rel="manifest" href="/album/manifest.json" />
+          <link rel="manifest" href="/manifest.json" />
           <link
-            href="/album/favicon-16x16.png"
+            href="/favicon-16x16.png"
             rel="icon"
             type="image/png"
             sizes="16x16"
           />
           <link
-            href="/album/favicon-32x32.png"
+            href="/favicon-32x32.png"
             rel="icon"
             type="image/png"
             sizes="32x32"
           />
-          <link rel="apple-touch-icon" href="/album/apple-touch-icon.png"></link>
+          <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>
 	  {/* iPhone Xs Max (1242px x 2688px) */} 
 	  <link
 	    rel="apple-touch-startup-image"
