@@ -2,11 +2,10 @@
 const withPWA = require('next-pwa')
 
 module.exports = withPWA({
-  basePath: '/album',
   reactStrictMode: true,
   pwa: {
     dest: 'public',
-    scope: '/album',
+    scope: '/',
     register: true,
     skipWaiting: true,
   },
