@@ -5,7 +5,7 @@
     min-height: 90vh;
     position: absolute !important;
     right: 0 !important;
-    background-image: url('/album/home-background.jpg');
+    background-image: url('/home-background.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
