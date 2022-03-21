@@ -88,7 +88,7 @@ const Albums: NextPage = () => {
 	<Grid item xs={12}>
 	  <Button
 	    variant="contained"
-	    size="xl"
+	    size="large"
 	    startIcon={<OpenInNewIcon />}
 	    onClick={onClickOpenInGooglePhoto}
 	    fullWidth
