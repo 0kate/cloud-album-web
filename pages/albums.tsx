@@ -26,7 +26,7 @@ const Albums: NextPage = () => {
   const api = useMemo(() => {
     const apiHost = process.env.NEXT_PUBLIC_API_HOST || '';
     const instance = axios.create({
-      baseURL: `${apiHost}/album/api`,
+      baseURL: `${apiHost}/albums`,
     });
     instance.defaults.headers.common['X-API-KEY'] = apiKey;
     instance.defaults.headers.post['Content-Type'] = 'application/json';
@@ -37,7 +37,7 @@ const Albums: NextPage = () => {
     setSelectedAlbum(album);
 
     if (album === undefined) return;
-    const response = await api.get(`/albums/${album}/photos`);
+    const response = await api.get(`/${album}/photos`);
     const responseJson = response.data;
     console.log(responseJson);
 
@@ -57,14 +57,14 @@ const Albums: NextPage = () => {
       return;
     }
     try {
-      const response = await api.get('/albums');
+      const response = await api.get('/');
       const responseJson = response.data;
 
       const albums = responseJson['albums'];
       setAlbums(albums);
 
       for (let album of albums) {
-	const response = await api.get(`/albums/${album.name}/thumbnail`);
+	const response = await api.get(`/${album.name}/thumbnail`);
 	const responseJson = response.data;
 
 	const thumbnailContent = responseJson.content;

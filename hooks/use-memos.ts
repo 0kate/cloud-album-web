@@ -7,7 +7,7 @@ const useMemos = () => {
 
   const apiHost = process.env.NEXT_PUBLIC_API_HOST || '';
   const instance = axios.create({
-    baseURL: `${apiHost}/album/api/memos`,
+    baseURL: `${apiHost}/memos`,
   });
   instance.defaults.headers.common['X-API-KEY'] = apiKey;
   instance.defaults.headers.common['Content-Type'] = 'application/json';

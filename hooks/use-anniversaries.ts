@@ -8,7 +8,7 @@ const useAnniversaries = () => {
 
   const apiHost = process.env.NEXT_PUBLIC_API_HOST || '';
   const instance = axios.create({
-    baseURL: `${apiHost}/album/api/anniversaries`,
+    baseURL: `${apiHost}/anniversaries`,
   });
   instance.defaults.headers.common['X-API-KEY'] = apiKey;
   instance.defaults.headers.common['Content-Type'] = 'application/json';
