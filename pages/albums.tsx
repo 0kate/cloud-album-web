@@ -51,7 +51,7 @@ const Albums: NextPage = () => {
     setImages([]);
   }, []);
   const onClickOpenInGooglePhoto = () => {
-    location.href = "googlephotos:///";
+    location.href = 'googlephotos:///';
   };
 
   useAsyncEffect(async () => {
