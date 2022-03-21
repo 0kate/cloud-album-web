@@ -1,6 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { NextPage } from 'next';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
+import {
+  OpenInNew as OpenInNewIcon,
+} from '@mui/icons-material';
 import useAsyncEffect from 'use-async-effect';
 import axios from 'axios';
 import Album from '../components/Album';
@@ -47,6 +50,9 @@ const Albums: NextPage = () => {
     setSelectedAlbum(undefined);
     setImages([]);
   }, []);
+  const onClickOpenInGooglePhoto = () => {
+    location.href = "googlephotos:///";
+  };
 
   useAsyncEffect(async () => {
     if (apiKey === '') {
@@ -79,6 +85,17 @@ const Albums: NextPage = () => {
   return (
     <Layout>
       <Grid container justifyContent="center" spacing={3}>
+	<Grid item xs={12}>
+	  <Button
+	    variant="contained"
+	    size="xl"
+	    startIcon={<OpenInNewIcon />}
+	    onClick={onClickOpenInGooglePhoto}
+	    fullWidth
+	  >
+	    Google Photoで開く
+	  </Button>
+	</Grid>
         {albums.map((album, idx) => (
           <Grid item key={idx} xs={12}>
 	    <Album
